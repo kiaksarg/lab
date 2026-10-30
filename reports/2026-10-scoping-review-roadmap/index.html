@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Scoping review roadmap</title>
+<meta name="description" content="A step-by-step roadmap for conducting and reporting a scoping review, following PRISMA-ScR with worked examples.">
+<style>
+:root{
+  --bg:#F3F5F8; --surface:#FFFFFF; --sunk:#EBEEF3; --ink:#18202E; --muted:#5A6476; --line:#D9DEE6;
+  --pa:#0E7C74; --pb:#2F5FD0; --pc:#7A4CC4; --pd:#A86400; --pe:#C23B5E; --pf:#3B7A3F;
+  --warn-bg:#FFF4E0; --warn-ink:#6B4300;
+  --ex-bg:#EEF2FB;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12161D; --surface:#1A2029; --sunk:#151A22; --ink:#E7EBF2; --muted:#9AA4B5; --line:#2C3440;
+    --pa:#3FB7AC; --pb:#7C9CF0; --pc:#A98BEA; --pd:#E3A23B; --pe:#EE7A97; --pf:#79B97C;
+    --warn-bg:#2E2414; --warn-ink:#F2CF8E; --ex-bg:#1B2436;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12161D; --surface:#1A2029; --sunk:#151A22; --ink:#E7EBF2; --muted:#9AA4B5; --line:#2C3440;
+  --pa:#3FB7AC; --pb:#7C9CF0; --pc:#A98BEA; --pd:#E3A23B; --pe:#EE7A97; --pf:#79B97C;
+  --warn-bg:#2E2414; --warn-ink:#F2CF8E; --ex-bg:#1B2436;
+  color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 76px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+h1,h2,h3{font-family:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-weight:600;letter-spacing:-.01em;margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--pb);outline-offset:2px;border-radius:4px}
+.wrap{max-width:920px;margin:0 auto;padding:0 20px}
+
+/* Header */
+header{padding:40px 0 20px}
+h1{font-size:clamp(2rem,5vw,3rem);line-height:1.08}
+.lede{color:var(--muted);max-width:62ch;margin:10px 0 0}
+.route{display:flex;gap:6px;margin:28px 0 8px}
+.seg{flex:var(--n) 1 0;min-width:0;text-align:left;background:none;border:0;padding:0;cursor:pointer}
+.seg .track{height:10px;border-radius:5px;background:color-mix(in srgb,var(--c) 22%,transparent);overflow:hidden}
+.seg .fill{height:100%;width:0;background:var(--c);border-radius:5px;transition:width .35s ease}
+.seg .lab{display:block;font-size:.78rem;color:var(--muted);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seg .lab b{color:var(--c);font-weight:700}
+.status{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;margin-top:14px}
+.count{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-size:1.35rem}
+.next{display:inline-flex;align-items:baseline;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer;text-align:left}
+.next span{color:var(--muted);font-size:.85rem}
+.sync{font-size:.8rem;color:var(--muted)}
+
+.expect{margin:22px 0 0;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--pb);border-radius:8px;padding:14px 18px}
+.expect h2{font-size:1.1rem;margin-bottom:6px}
+.expect ul{margin:0;padding-left:1.1em;color:var(--ink)}
+.expect li{margin:3px 0}
+
+/* Sticky bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;gap:8px;padding-top:10px;padding-bottom:10px}
+.pills{display:flex;gap:6px;overflow-x:auto;flex:1;scrollbar-width:none}
+.pills::-webkit-scrollbar{display:none}
+.pill{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:.85rem;cursor:pointer;display:flex;align-items:center;gap:7px}
+.pill i{width:9px;height:9px;border-radius:50%;background:var(--c);display:inline-block}
+.pill small{color:var(--muted)}
+.tools{display:flex;gap:6px;flex:none}
+.tbtn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:5px 10px;font-size:.82rem;cursor:pointer}
+.tbtn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+@media (max-width:640px){.tools .opt{display:none}}
+
+/* Phases */
+.phase{padding:36px 0 8px}
+.ph-head{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:baseline;margin-bottom:18px}
+.ph-letter{grid-row:span 3;font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-size:3.2rem;line-height:.9;color:var(--c);font-weight:600}
+.ph-head h2{font-size:1.6rem}
+.ph-when{font-size:.85rem;color:var(--muted)}
+.ph-goal{margin:2px 0 0;max-width:64ch}
+.milestone{grid-column:2;margin-top:8px;font-size:.88rem;display:flex;gap:8px;align-items:flex-start}
+.milestone svg{flex:none;margin-top:2px;color:var(--c)}
+
+.steps{list-style:none;margin:0;padding:0;position:relative}
+.steps::before{content:"";position:absolute;left:15px;top:14px;bottom:14px;width:3px;border-radius:2px;background:color-mix(in srgb,var(--c) 45%,transparent)}
+.step{position:relative;display:grid;grid-template-columns:34px 1fr;gap:14px;padding:10px 0}
+.stn{position:relative;z-index:1;width:34px;height:34px;border-radius:50%;border:3px solid var(--c);background:var(--surface);cursor:pointer;display:grid;place-items:center;padding:0}
+.stn svg{opacity:0;color:#fff;transition:opacity .15s}
+.step.done .stn{background:var(--c)}
+.step.done .stn svg{opacity:1}
+.step.current .stn::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:2px solid var(--c);animation:ping 2.2s ease-out infinite}
+@keyframes ping{0%{transform:scale(.8);opacity:.9}100%{transform:scale(1.25);opacity:0}}
+@media (prefers-reduced-motion: reduce){.step.current .stn::after{animation:none;opacity:.6}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+.step.current .card{border-color:var(--c);box-shadow:0 0 0 1px var(--c)}
+.step.done .card{background:var(--sunk)}
+.step.done .card h3{color:var(--muted)}
+.here{display:none;font-size:.78rem;font-weight:700;color:var(--c);margin-bottom:2px}
+.step.current .here{display:block}
+.card h3{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:0;display:flex;gap:10px;align-items:baseline}
+.card h3 .sid{color:var(--c);font-variant-numeric:tabular-nums;font-weight:700;flex:none}
+.sum{margin:4px 0 0;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-size:.76rem;border-radius:4px;padding:2px 8px;background:var(--sunk);color:var(--muted);border:1px solid var(--line)}
+.chip.p{color:var(--c);border-color:color-mix(in srgb,var(--c) 40%,transparent);background:color-mix(in srgb,var(--c) 8%,transparent)}
+.chip.f{color:var(--pb);border-color:color-mix(in srgb,var(--pb) 40%,transparent)}
+.step.done .chip{opacity:.75}
+
+details{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px}
+summary{cursor:pointer;font-size:.88rem;font-weight:600;color:var(--c);list-style:none;display:inline-flex;align-items:center;gap:6px}
+summary::-webkit-details-marker{display:none}
+summary svg{transition:transform .2s}
+details[open] summary svg{transform:rotate(90deg)}
+summary .close{display:none}
+details[open] summary .open{display:none}
+details[open] summary .close{display:inline}
+.dbody{display:grid;gap:12px;margin-top:10px}
+.dbody h4{margin:0 0 4px;font-size:.82rem;font-weight:700;color:var(--muted)}
+.dbody p{margin:0}
+.dbody ul{margin:0;padding-left:1.15em}
+.dbody li{margin:3px 0}
+.ex{background:var(--ex-bg);border-radius:8px;padding:10px 12px}
+.warn{background:var(--warn-bg);color:var(--warn-ink);border-radius:8px;padding:10px 12px}
+.warn h4{color:var(--warn-ink)}
+.notes label{display:block;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:4px}
+.notes textarea{width:100%;min-height:64px;resize:vertical;font:inherit;font-size:.92rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px}
+body.hide-done .step.done{display:none}
+
+a{color:var(--pb)}
+footer a{color:inherit}
+/* Overview */
+.overview{margin:26px 0 0;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 16px 12px}
+.ov-head{display:flex;align-items:center;justify-content:space-between;gap:10px 12px;flex-wrap:wrap;margin-bottom:14px}
+.ov-head h2{font-size:1.35rem}
+.tabs{display:inline-flex;border:1px solid var(--line);border-radius:8px;padding:3px;background:var(--bg)}
+.tab{border:0;background:none;padding:5px 12px;border-radius:6px;font-size:.85rem;cursor:pointer;color:var(--muted)}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+.ovgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.ovcol{display:flex;flex-direction:column;gap:5px;min-width:0}
+.ovcol h3{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:.8rem;font-weight:700;letter-spacing:0;color:var(--c);display:flex;justify-content:space-between;gap:6px;padding:0 2px 5px;margin-bottom:2px;border-bottom:3px solid var(--c)}
+.ovcol h3 span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ovcol h3 small{color:var(--muted);font-weight:500;flex:none}
+.box{text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:5px 8px;cursor:pointer;font-size:.75rem;line-height:1.25;min-height:46px}
+.box b{display:block;color:var(--c);font-variant-numeric:tabular-nums}
+.box span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.box.done{background:var(--c);border-color:var(--c);color:var(--surface)}
+.box.done b{color:inherit}
+.box.current{border-color:var(--c);box-shadow:0 0 0 2px var(--c);background:var(--surface)}
+.ov-note{font-size:.82rem;color:var(--muted);margin:0 0 10px}
+.legend .l3::before{background:var(--muted);border-color:var(--muted)}
+.legend .l4::before{box-shadow:0 0 0 2px var(--pb);border-color:var(--pb)}
+@media (max-width:820px){.ovgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:460px){.ovgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* PRISMA grid */
+.prisma{padding:44px 0 20px}
+.prisma h2{font-size:1.6rem}
+.prisma>p{color:var(--muted);max-width:64ch;margin:6px 0 18px}
+.pgroup{margin:14px 0}
+.pgroup h3{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:.85rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+.pcells{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:6px}
+.pcell{display:flex;gap:8px;align-items:flex-start;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px;cursor:pointer;font-size:.85rem;line-height:1.3}
+.pcell b{font-variant-numeric:tabular-nums;min-width:1.4em;color:var(--muted)}
+.pcell .refs{display:block;color:var(--muted);font-size:.74rem;margin-top:2px}
+.pcell.ok{border-color:var(--pf);background:color-mix(in srgb,var(--pf) 10%,var(--surface))}
+.pcell.ok b{color:var(--pf)}
+.pcell.part{border-color:var(--pd)}
+.pcell.part b{color:var(--pd)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.8rem;color:var(--muted);margin-top:8px}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px;border:1px solid var(--line)}
+.legend .l1::before{background:color-mix(in srgb,var(--pf) 30%,var(--surface));border-color:var(--pf)}
+.legend .l2::before{border-color:var(--pd)}
+footer{padding:20px 0 60px;color:var(--muted);font-size:.85rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.reset{background:none;border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer;color:var(--muted)}
+.flash{animation:flash 1.2s ease}
+@keyframes flash{0%{box-shadow:0 0 0 4px var(--c)}100%{box-shadow:0 0 0 0 transparent}}
+@media (prefers-reduced-motion: reduce){.flash{animation:none}.seg .fill{transition:none}}
+@media (max-width:560px){
+  .wrap{padding:0 14px}
+  .step{grid-template-columns:28px 1fr;gap:10px}
+  .stn{width:28px;height:28px}
+  .steps::before{left:12px}
+  .ph-letter{font-size:2.4rem}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Scoping review roadmap</h1>
+  <p class="lede">A step-by-step route from protocol to submission. The steps follow the method and structure of <a href="https://doi.org/10.1145/3772318.3791662">Khan et al. (CHI ’26)</a> and are checked against the 22 items of <a href="https://www.prisma-statement.org/scoping">PRISMA-ScR</a>. Tick a station when a step is done; the highlighted one is where you are.</p>
+  <div class="route" id="route" aria-label="Progress by phase"></div>
+  <div class="status">
+    <span class="count" id="count"></span>
+    <button class="next" id="next" type="button"></button>
+    <span class="sync">Progress and notes stay in this browser only.</span>
+  </div>
+  <section class="overview" aria-labelledby="ov-h">
+    <div class="ov-head">
+      <h2 id="ov-h">At a glance</h2>
+      <div class="tabs" role="tablist" aria-label="Overview view">
+        <button class="tab" role="tab" id="tab-steps" aria-selected="true" aria-controls="pan-steps" type="button">Steps</button>
+        <button class="tab" role="tab" id="tab-prisma" aria-selected="false" aria-controls="pan-prisma" type="button">PRISMA-ScR items</button>
+      </div>
+    </div>
+    <div id="pan-steps" role="tabpanel" aria-labelledby="tab-steps">
+      <div class="ovgrid" id="ovgrid"></div>
+      <div class="legend"><span class="l3">Done</span><span class="l4">You are here</span><span>To do</span></div>
+    </div>
+    <div id="pan-prisma" role="tabpanel" aria-labelledby="tab-prisma" hidden>
+      <p class="ov-note">Each item turns green when every step that produces it is done. Select an item to jump to its first step.</p>
+      <div id="pgrid"></div>
+      <div class="legend"><span class="l1">Covered</span><span class="l2">In progress</span><span>Not started</span></div>
+    </div>
+  </section>
+  <section class="expect" aria-labelledby="exp-h">
+    <h2 id="exp-h">What a good scoping review shows</h2>
+    <ul>
+      <li>A clear answer to “why is this review needed?” and “what questions does it answer?”</li>
+      <li>A map of what has been done so far, what is missing, and the gaps for future work.</li>
+      <li>A transparent method that meets PRISMA-ScR, including the items reviews often skip (Khan et al. among them): a registered protocol, a second screener, reasons for every exclusion, and a stated decision on critical appraisal.</li>
+    </ul>
+  </section>
+</header>
+</div>
+
+<nav class="bar" aria-label="Phases">
+  <div class="wrap">
+    <div class="pills" id="pills"></div>
+    <div class="tools">
+      <button class="tbtn opt" id="openAll" type="button">Open all</button>
+      <button class="tbtn opt" id="closeAll" type="button">Close all</button>
+      <button class="tbtn" id="hideDone" type="button" aria-pressed="false">Hide done</button>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap" id="main"></main>
+
+<div class="wrap">
+  <footer>
+    <span>Examples are paraphrased from Khan, Weidner, Rhee, Abdrabou, Bianchi, Velloso, Gellersen and Newn, “Gaze and Speech in Multimodal Human-Computer Interaction: A Scoping Review”, CHI ’26, <a href="https://doi.org/10.1145/3772318.3791662">doi:10.1145/3772318.3791662</a>, licensed CC BY 4.0. Checklist: Tricco et al., PRISMA-ScR, Ann Intern Med 2018, <a href="https://doi.org/10.7326/M18-0850">doi:10.7326/M18-0850</a>. This roadmap is an unofficial guide, not endorsed by those authors.</span>
+    <button class="reset" id="reset" type="button">Reset progress</button>
+  </footer>
+</div>
+
+<script>
+const PHASES = [
+  {id:"A", name:"Plan and protocol", color:"--pa",
+   goal:"Fix the question, the criteria, the search and the charting form before you look at any results.",
+   milestone:"Protocol registered (for example on OSF) and agreed by the review team."},
+  {id:"B", name:"Search", color:"--pb",
+   goal:"Run the registered searches once, in one go, and keep a log you could hand to someone else.",
+   milestone:"Search log with dates and hit counts; one deduplicated library."},
+  {id:"C", name:"Screen", color:"--pc",
+   goal:"Turn thousands of records into a defensible included set, with a reason for every exclusion.",
+   milestone:"Final included set and a filled PRISMA flow diagram."},
+  {id:"D", name:"Chart", color:"--pd",
+   goal:"Extract the same variables from every source, then code them into categories you can count.",
+   milestone:"Complete charting table, codebook and a reliability score."},
+  {id:"E", name:"Synthesise results", color:"--pe",
+   goal:"Write the body of the paper: foundations, corpus overview, then each category through your analytical lenses.",
+   milestone:"Results sections, figures and tables drafted."},
+  {id:"F", name:"Discuss and report", color:"--pf",
+   goal:"Turn the map into its main output: open challenges, each with evidence and a recommendation.",
+   milestone:"Full draft and a completed PRISMA-ScR checklist."}
+];
+
+const STEPS = [
+ // ---------- A: Plan and protocol
+ {id:"A1", ph:"A", t:"Write the review question in PCC form", prisma:[4], out:"Main question and 2–4 sub-questions",
+  s:"State the Population, Concept and Context, then one main question and a few sub-questions that will later become your analysis lenses.",
+  do:["Name the Population (who), the Concept (what you map) and the Context (where).","Write one broad mapping question, not an effectiveness question.","Add 2–4 sub-questions. Each one should later be answerable from your charting form.","Check that the answer will show what has been done and what is missing."],
+  khan:"One broad question: “How is the combination of gaze and speech used for interaction?” It works as a mapping question but is not broken into PCC elements, which PRISMA-ScR item 4 asks for.",
+  warn:"Settle how broad the Concept is (one variable or several) before you write the search. It changes everything after this step."},
+ {id:"A2", ph:"A", t:"Justify the review and the scoping approach", prisma:[3], out:"Half-page rationale",
+  s:"Explain why the review is needed now, what existing reviews miss, and why a scoping review fits better than a systematic one.",
+  do:["List the closest existing reviews and write one line on what each one leaves out.","Say why now: what has changed in technology, adoption or research activity.","Say why scoping: you are mapping a broad, mixed field, not pooling effect sizes.","Cite a review typology source, for example Grant and Booth (2009) or Munn et al. (2018) on choosing between scoping and systematic reviews."],
+  khan:"The field is fragmented; earlier surveys treat gaze or speech alone; consumer XR headsets and large language models make the pairing timely. They also explain why gesture is out of scope. They never say why a scoping review was the right type.",
+  warn:"Search for existing reviews before claiming that none exists. Reviewers will check."},
+ {id:"A3", ph:"A", t:"Build a seed set of known key papers", prisma:[], out:"10–20 papers the search must find",
+  s:"Collect papers you already know belong in the review. You will use them to test whether your search string finds what it should.",
+  do:["List papers you are sure should be included.","Note where each one is indexed (ACM, IEEE, Scopus, PubMed and so on).","After every search draft, check how many seed papers it finds."],
+  khan:"Their first simple query missed key CHI and ICMI papers. They noticed and expanded the query. A seed set turns that ad hoc check into a planned one."},
+ {id:"A4", ph:"A", t:"Define eligibility criteria with rationales", prisma:[6], out:"Inclusion and exclusion table",
+  s:"Write each inclusion and exclusion criterion with a one-line reason. Cover years, language, publication type, population, concept and context.",
+  do:["One row per criterion: the rule and why it exists.","Add two or three worked borderline examples per tricky criterion.","Pilot the criteria on about 20 abstracts and tighten the wording."],
+  khan:"IC1 both modalities used as input; IC2 single-user HCI. EC1 computer-mediated human–human interaction; EC2 output or synthesis work; EC3 posters, extended abstracts and workshop papers; EC4 not in English. Every criterion has a rationale.",
+  warn:"Excluding late-breaking work keeps quality up but can hide the newest studies. Decide and give the reason."},
+ {id:"A5", ph:"A", t:"Choose information sources", prisma:[7], out:"Databases, coverage dates and extra sources",
+  s:"Pick the databases, say why, and plan snowballing and an update search from the start.",
+  do:["List each database with its coverage dates.","Check that the databases cover the main journals and venues of every field your topic touches.","Plan backward and forward snowballing.","Plan an update search close to submission."],
+  khan:"ACM DL, IEEE Xplore, Scopus and Web of Science, chosen for computing coverage plus breadth. Backward snowballing. An update search nine months later."},
+ {id:"A6", ph:"A", t:"Build and test the search string", prisma:[8], out:"Full query for every database",
+  s:"Join concept blocks with AND, list synonyms inside each block with OR, and test recall against your seed set.",
+  do:["One block per PCC element; synonyms joined with OR.","Search title, abstract and author keywords.","Log every version of the string with its hit count and seed-set recall.","Translate the syntax for each database and keep the exact strings for the appendix.","Ask a subject librarian to review it if you can."],
+  khan:"(“gaze” OR “eye”) AND (“speech” OR “voice” OR “audio” OR “vocal”) AND (“interact*” OR “communicat*” OR “input” OR …). Expanded with keywords from the first 50 ACM results. Full strings in Appendix Table 4.",
+  warn:"Broad terms bring a lot of noise. Estimate the hit count early so you can plan screening time."},
+ {id:"A7", ph:"A", t:"Draft the charting form and synthesis plan", prisma:[10,11,13], out:"Form with every variable defined",
+  s:"Decide which variables you will extract from every source, define each one, and say how you will summarise them.",
+  do:["One column per variable, with a definition and allowed values.","Include variables that can show gaps later: study length, sample, setting, ground truth, data handling.","Plan descriptive counts plus inductive coding.","Name the lenses you expect to use; they may change."],
+  khan:"Appendix Table 5, columns C1–C11: task, users, real-time or offline, sequential or parallel, cues, explicit or implicit, fusion, fusion level, methods, annotation, generalisability. Questions only; the variables are not defined.",
+  warn:"If included studies collect personal or health-related data, chart whether they report how they protected it (consent, storage, processing on device). That gives you evidence for any ethics or privacy challenge later."},
+ {id:"A8", ph:"A", t:"Decide on critical appraisal", prisma:[12,16], out:"One stated decision with a reason",
+  s:"Scoping reviews usually skip formal appraisal, but PRISMA-ScR wants the decision and the reason written down.",
+  do:["Choose: no appraisal, or a light check of reporting quality.","Write the decision and the reason in the protocol.","If you skip appraisal, consider charting reporting variables (sample size, session length, ground truth) instead."],
+  khan:"No appraisal, and the paper does not say so."},
+ {id:"A9", ph:"A", t:"Write and register the protocol", prisma:[5], out:"Registration and DOI", feedback:true,
+  s:"Put A1–A8, the screening plan and team roles into one protocol, agree it as a team, and register it before the final search.",
+  do:["Use a scoping review protocol template (JBI or the OSF template).","Include question, criteria, sources, search strings, screening plan, charting form, synthesis plan and appraisal decision.","Agree roles with your co-reviewers.","Register it (for example on OSF) before running the final search.","Start a deviations log for any later change."],
+  khan:"No protocol was registered. This is the largest PRISMA-ScR gap in the paper.",
+  warn:"Every change after registration goes in the deviations log and is reported in the paper."},
+
+ // ---------- B: Search
+ {id:"B1", ph:"B", t:"Run the searches", prisma:[7,8], out:"Raw exports and a search log",
+  s:"Run the registered strings in every database on the same day and export full records.",
+  do:["Run each string; record the date and hit count per database.","Export full records with abstracts (RIS or BibTeX).","Keep the raw exports untouched in a dated folder."],
+  khan:"Search run on 29 September 2024: 11,504 records across four databases."},
+ {id:"B2", ph:"B", t:"Remove duplicates", prisma:[14], out:"Deduplicated library and count",
+  s:"Merge the exports and remove duplicates, recording the count before and after.",
+  do:["Match on DOI first, then title, year and authors.","Use a tool (Zotero, Rayyan, ASReview import) or a script.","Spot-check a sample of removed records."],
+  khan:"A Python script matched title, authors and year: 11,504 became 8,075."},
+
+ // ---------- C: Screen
+ {id:"C1", ph:"C", t:"Calibrate screening with your co-screener", prisma:[9], out:"Agreement score and refined criteria",
+  s:"Both screeners judge the same small sample independently, then compare and tighten the criteria.",
+  do:["Both screen the same 50–100 records independently.","Compute Cohen’s κ.","Discuss every disagreement and reword criteria.","Repeat on a new sample until agreement is good."],
+  khan:"Not done for screening. They report κ only for coding."},
+ {id:"C2", ph:"C", t:"Screen titles and abstracts", prisma:[9,14], out:"Include, exclude or unclear for every record",
+  s:"Sort every record into include, exclude or unclear. When in doubt, include and decide at full text.",
+  do:["Screen in duplicate, or with one screener plus a second on a random sample.","If you use an AI-assisted tool such as ASReview, record the model, the stopping rule and the full log.","Record who screened what."],
+  khan:"The first author alone screened 8,075 records: 112 included, 20 unclear.",
+  warn:"A single screener for thousands of records is the part reviewers most often question. Report who did what and the agreement."},
+ {id:"C3", ph:"C", t:"Resolve unclear records and conflicts", prisma:[9], out:"Decision log",
+  s:"Discuss every unclear or conflicting record as a team and write down the decision.",
+  khan:"20 unclear records were discussed: 5 included, 15 excluded, leaving 117."},
+ {id:"C4", ph:"C", t:"Screen full texts and record reasons", prisma:[9,14], out:"Included set with one reason per exclusion",
+  s:"Read each full text against the criteria and give every exclusion a reason from a fixed list.",
+  do:["Retrieve full texts; log any you cannot get.","Use a fixed list of exclusion reasons that mirrors your criteria.","Record exactly one main reason per excluded paper."],
+  khan:"30 papers were removed at this stage, but the reasons are not reported."},
+ {id:"C5", ph:"C", t:"Snowball backward and forward", prisma:[7], out:"Additional included papers",
+  s:"Check the references of included papers and the papers that cite them, using the same criteria.",
+  do:["Backward: reference lists of included papers.","Forward: citing papers via Scopus or Google Scholar.","Report these separately in the flow diagram."],
+  khan:"Backward only: 7 more papers."},
+ {id:"C6", ph:"C", t:"Run an update search before submission", prisma:[7], out:"Update counts and new papers",
+  s:"Re-run the same strings for the period since the first search, screen the results, and add them.",
+  do:["Re-run the exact registered strings, limited to dates after the first search.","Screen with the same criteria and process.","Report the update separately in the flow diagram."],
+  khan:"29 June 2025, covering September 2024 to June 2025: 1,136 records gave 9 more papers."},
+ {id:"C7", ph:"C", t:"Draw the PRISMA flow diagram", prisma:[14], out:"Flow diagram figure",
+  s:"Show the count at every stage, the exclusion reasons, and separate boxes for snowballing and the update search.",
+  khan:"Figure 2: identification, screening, eligibility and inclusion, ending at 103 studies."},
+
+ // ---------- D: Chart
+ {id:"D1", ph:"D", t:"Pilot the charting form", prisma:[10], out:"Revised, frozen form",
+  s:"Both coders chart the same few papers, compare, fix unclear definitions, then freeze the form.",
+  do:["Both chart the same 5–10 papers.","Compare value by value.","Rewrite unclear definitions, then freeze the form."],
+  khan:"Categories were “iteratively refined through pilot coding and discussion”."},
+ {id:"D2", ph:"D", t:"Chart every included source", prisma:[10,11,17], out:"Full charting table",
+  s:"Fill one row per source, with page numbers for key values.",
+  do:["One row per source.","Note the page for key values.","Keep “not reported” separate from “no”."],
+  khan:"A structured spreadsheet; full-text work split across four authors (65%, 9% and 26%).",
+  warn:"“Not reported” versus “not done” is the distinction that lets you claim a gap later."},
+ {id:"D3", ph:"D", t:"Code categories and build the codebook", prisma:[13], out:"Versioned codebook",
+  s:"Turn charted text into codes, define each code, and refine them through discussion.",
+  khan:"Coded by interaction type, combination and integration strategy, task and domain."},
+ {id:"D4", ph:"D", t:"Check coding reliability", prisma:[10], out:"Cohen’s κ",
+  s:"A second coder re-codes a random subset; report agreement and how disagreements were settled.",
+  do:["A second coder re-codes a random subset (for example 25%).","Report κ overall or per variable.","Describe how disagreements were resolved."],
+  khan:"The fourth author re-coded a random 25%. Cohen’s κ was above 0.80, and disagreements were discussed until all agreed."},
+ {id:"D5", ph:"D", t:"Derive the top-level structure", prisma:[13], out:"Two or three categories and a borderline rule",
+  s:"Find the distinction that splits the corpus meaningfully, ground it in earlier work, and write a rule for borderline papers.",
+  khan:"Explicit (N=55) versus implicit (N=48), taken from earlier gaze surveys. They call it a continuum and classify borderline papers by how the system works, not by what the user intends."},
+
+ // ---------- E: Synthesise
+ {id:"E1", ph:"E", t:"Write the foundations section", prisma:[], out:"Background section before the results",
+  s:"Give readers the concepts the results rely on, without reporting findings yet.",
+  khan:"Section 4, “Gaze and Speech as Input Modalities”: properties and signal features of each modality."},
+ {id:"E2", ph:"E", t:"Describe the corpus", prisma:[15], out:"Overview figures and a per-study table",
+  s:"Show the shape of the corpus: years, venues, study types and other key characteristics, plus one row per source in the supplement.",
+  khan:"Only venue counts (ICMI 8, CHI 6, ETRA 5) and citations grouped by task in Tables 2 and 3. No per-study table."},
+ {id:"E3", ph:"E", t:"Choose your lenses and make the figures", prisma:[18], out:"Main figures and tables",
+  s:"For example, one lens for how things work and one for where they are applied. Build the figures that carry each.",
+  khan:"Lens 1, how the modalities are combined (Figures 3, 5, 6). Lens 2, where they are applied (Sankey in Figure 4; Tables 1–3)."},
+ {id:"E4", ph:"E", t:"Write a results section per category", prisma:[17,18], out:"Results sections",
+  s:"Open with the definition and N, work through each lens, and write each sub-task paragraph to the same pattern.",
+  do:["Opening paragraph: definition and number of studies.","Lens 1 subsections, then Lens 2 subsections.","Each sub-task paragraph: define the task, give the count, name the pattern, group variants with citations, give one example system, then say what the evidence shows or where it falls short."],
+  khan:"Sections 5 and 6 both follow this exact template. Many later challenges first appear as criticisms inside these paragraphs."},
+ {id:"E5", ph:"E", t:"Add a takeaways box per category", prisma:[18], out:"Three numbered takeaways each",
+  s:"Close each results section with three short points that feed the discussion.",
+  khan:"Sections 5.3 and 6.3: three numbered points plus guidance for designers."},
+
+ // ---------- F: Discuss and report
+ {id:"F1", ph:"F", t:"Summarise the evidence", prisma:[19], out:"Discussion opening",
+  s:"State the core message across categories, why it matters now, and who it matters to.",
+  khan:"Section 7 opening: the shared message, why it matters now (XR, large language models) and a key group (accessibility)."},
+ {id:"F2", ph:"F", t:"Compare the categories", prisma:[19], out:"Comparison subsection",
+  s:"What the categories share, how they differ, the trade-off between them, and cases that blur the line.",
+  khan:"Section 7.1: similarities, differences, the precision versus adaptivity trade-off, and hybrid systems such as EyeSayCorrect."},
+ {id:"F3", ph:"F", t:"Write open challenges with recommendations", prisma:[21], out:"Four to six challenges", feedback:true,
+  s:"The main output of the review. Each challenge goes: problem, evidence from the corpus, why it matters, and “We recommend that future work…”.",
+  do:["Open with a framing claim about where the field stands.","For each challenge: problem, evidence with counts and section references, why it matters, one recommendation.","Trace every challenge to a charting variable."],
+  khan:"Six challenges: temporal alignment; fusion and inference strategies; annotation and generalisability; ethics and privacy; evaluation beyond the lab; diverse users and contexts. Framed by “the benefit is established, the field is repetitive”.",
+  warn:"Keep claims at “N studies reported X”. Without appraisal, avoid effectiveness claims such as “almost always outperforms unimodal baselines”."},
+ {id:"F4", ph:"F", t:"Write the limitations", prisma:[20], out:"Limitations section",
+  s:"Be honest about what the process could have missed.",
+  do:["Search terms and databases that may have missed relevant work.","Scope exclusions and why they matter.","Single-screener stages, language limits and anything else that deviated from the protocol."],
+  khan:"Terminology that may have been missed; scope exclusions; no comparison of evaluation metrics."},
+ {id:"F5", ph:"F", t:"Write conclusion, abstract, title and funding", prisma:[1,2,21,22], out:"Front and back matter",
+  s:"Title says “scoping review”; the abstract covers every element of item 2; funding covers the review and the funders’ role.",
+  do:["Title includes “scoping review”.","Abstract: background, objectives, eligibility, sources, charting methods, results, conclusions.","Funding of the review and the funders’ role; note funding of included studies if charted."],
+  khan:"Title correct. The CHI-style abstract leaves out eligibility, sources and charting method. Funding appears only in the acknowledgments."},
+ {id:"F6", ph:"F", t:"Prepare the appendix and open materials", prisma:[8,11,15,17], out:"Shared repository with all materials",
+  s:"Share everything someone would need to repeat or check the review.",
+  do:["Full search strings for every database.","Charting form with variable definitions.","Per-study charting table.","Filled PRISMA-ScR checklist with page numbers.","Deviations log."],
+  khan:"Appendix: the Nigay and Coutaz figure, search strings (Table 4) and extraction questions (Table 5)."},
+ {id:"F7", ph:"F", t:"Run the final PRISMA-ScR check", prisma:[], out:"Completed checklist and draft", feedback:true,
+  s:"Go through all 22 items, fill in page numbers, fix anything missing, then share the draft with your co-authors.",
+  do:["Fill in “Reported on page #” for every item.","Fix gaps, or explain them in the limitations.","Share the draft and checklist with co-authors before submission."]}
+];
+
+const PRISMA = [
+  {g:"Title and abstract", items:[[1,"Title"],[2,"Structured summary"]]},
+  {g:"Introduction", items:[[3,"Rationale"],[4,"Objectives"]]},
+  {g:"Methods", items:[[5,"Protocol and registration"],[6,"Eligibility criteria"],[7,"Information sources"],[8,"Search"],[9,"Selection of sources"],[10,"Data charting process"],[11,"Data items"],[12,"Critical appraisal"],[13,"Synthesis methods"]]},
+  {g:"Results", items:[[14,"Selection of sources"],[15,"Characteristics of sources"],[16,"Appraisal within sources"],[17,"Results of individual sources"],[18,"Synthesis of results"]]},
+  {g:"Discussion", items:[[19,"Summary of evidence"],[20,"Limitations"],[21,"Conclusions"]]},
+  {g:"Funding", items:[[22,"Funding"]]}
+];
+
+/* ---------- state ---------- */
+const KEY = "scr-roadmap-v1";
+let state = {done:{}, notes:{}, updatedAt:0};
+try{ const raw = localStorage.getItem(KEY); if(raw){ const p = JSON.parse(raw); if(p && typeof p==="object"){ state = {done:p.done||{}, notes:p.notes||{}, updatedAt:p.updatedAt||0}; } } }catch(e){}
+
+
+function persist(){ state.updatedAt = Date.now(); saveLocal(); }
+function saveLocal(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+
+/* ---------- render ---------- */
+const $ = (s,el=document)=>el.querySelector(s);
+const el = (tag, cls, text)=>{ const n=document.createElement(tag); if(cls) n.className=cls; if(text!=null) n.textContent=text; return n; };
+const svgCheck = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const svgChev = '<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+const svgFlag = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 15V2m0 0h8l-1.5 3L11 8H3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+
+function build(){
+  const route = $("#route"), pills = $("#pills"), main = $("#main");
+  PHASES.forEach(ph=>{
+    const n = STEPS.filter(s=>s.ph===ph.id).length;
+    // route segment
+    const seg = el("button","seg"); seg.type="button"; seg.style.setProperty("--n", n); seg.style.setProperty("--c", `var(${ph.color})`);
+    seg.dataset.ph = ph.id;
+    seg.innerHTML = `<div class="track"><div class="fill"></div></div><span class="lab"><b>${ph.id}</b> ${ph.name}</span>`;
+    seg.setAttribute("aria-label", `Go to phase ${ph.id}, ${ph.name}`);
+    seg.addEventListener("click",()=>jump("ph-"+ph.id));
+    route.appendChild(seg);
+    // pill
+    const pill = el("button","pill"); pill.type="button"; pill.style.setProperty("--c", `var(${ph.color})`); pill.dataset.ph=ph.id;
+    pill.innerHTML = `<i></i>${ph.id} ${ph.name} <small></small>`;
+    pill.addEventListener("click",()=>jump("ph-"+ph.id));
+    pills.appendChild(pill);
+    // section
+    const sec = el("section","phase"); sec.id = "ph-"+ph.id; sec.style.setProperty("--c", `var(${ph.color})`);
+    const head = el("div","ph-head");
+    head.appendChild(el("div","ph-letter",ph.id));
+    head.appendChild(el("h2",null,ph.name));
+    const items=[...new Set(STEPS.filter(s=>s.ph===ph.id).flatMap(s=>s.prisma))].sort((x,y)=>x-y);
+    head.appendChild(el("div","ph-when", items.length ? "PRISMA-ScR items "+items.join(", ") : ""));
+    head.appendChild(el("p","ph-goal",ph.goal));
+    const ms = el("div","milestone"); ms.innerHTML = svgFlag; const mt = el("span"); mt.innerHTML = "<strong>Milestone:</strong> "; mt.appendChild(document.createTextNode(ph.milestone)); ms.appendChild(mt);
+    head.appendChild(ms);
+    sec.appendChild(head);
+    const ol = el("ol","steps");
+    STEPS.filter(s=>s.ph===ph.id).forEach(st=> ol.appendChild(buildStep(st)));
+    sec.appendChild(ol);
+    main.appendChild(sec);
+  });
+  // overview boxes
+  const ov = $("#ovgrid");
+  PHASES.forEach(ph=>{
+    const col = el("div","ovcol"); col.style.setProperty("--c", `var(${ph.color})`); col.dataset.ph = ph.id;
+    const h = el("h3"); h.appendChild(el("span",null,ph.id+" "+ph.name)); h.appendChild(el("small")); col.appendChild(h);
+    STEPS.filter(s=>s.ph===ph.id).forEach(st=>{
+      const b = el("button","box"); b.type="button"; b.dataset.id = st.id; b.title = st.id+" "+st.t;
+      b.appendChild(el("b",null,st.id)); b.appendChild(el("span",null,st.t));
+      b.addEventListener("click",()=>jump("st-"+st.id, true));
+      col.appendChild(b);
+    });
+    ov.appendChild(col);
+  });
+  // PRISMA grid
+  const grid = $("#pgrid");
+  PRISMA.forEach(group=>{
+    const g = el("div","pgroup"); g.appendChild(el("h3",null,group.g));
+    const cells = el("div","pcells");
+    group.items.forEach(([num,name])=>{
+      const refs = STEPS.filter(s=>s.prisma.includes(num)).map(s=>s.id);
+      const b = el("button","pcell"); b.type="button"; b.dataset.item=num;
+      const bn = el("b",null,String(num)); const sp = el("span"); sp.appendChild(document.createTextNode(name));
+      const r = el("span","refs", refs.length ? "Steps "+refs.join(", ") : "No step");
+      sp.appendChild(r); b.appendChild(bn); b.appendChild(sp);
+      b.addEventListener("click",()=>{ if(refs[0]) jump("st-"+refs[0], true); });
+      cells.appendChild(b);
+    });
+    g.appendChild(cells); grid.appendChild(g);
+  });
+}
+
+function buildStep(st){
+  const li = el("li","step"); li.id = "st-"+st.id; li.dataset.id = st.id;
+  const stn = el("button","stn"); stn.type="button"; stn.innerHTML = svgCheck;
+  stn.setAttribute("aria-label", `Mark ${st.id} ${st.t} as done`);
+  stn.addEventListener("click",()=>{ state.done[st.id] = !state.done[st.id]; if(!state.done[st.id]) delete state.done[st.id]; persist(); update(); });
+  li.appendChild(stn);
+  const card = el("div","card");
+  card.appendChild(el("div","here","You are here"));
+  const h = el("h3"); h.appendChild(el("span","sid",st.id)); h.appendChild(el("span",null,st.t)); card.appendChild(h);
+  card.appendChild(el("p","sum",st.s));
+  const chips = el("div","chips");
+  if(st.out) chips.appendChild(el("span","chip","Output: "+st.out));
+  st.prisma.forEach(p=>chips.appendChild(el("span","chip p","PRISMA-ScR "+p)));
+  if(st.feedback) chips.appendChild(el("span","chip f","Get team feedback here"));
+  card.appendChild(chips);
+
+  const det = el("details");
+  const sum = el("summary"); sum.innerHTML = svgChev + '<span class="open">Show details and example</span><span class="close">Hide details</span>';
+  det.appendChild(sum);
+  const body = el("div","dbody");
+  if(st.do){ const s=el("section"); s.appendChild(el("h4",null,"What to do")); const ul=el("ul"); st.do.forEach(d=>ul.appendChild(el("li",null,d))); s.appendChild(ul); body.appendChild(s); }
+  if(st.khan){ const s=el("section","ex"); s.appendChild(el("h4",null,"Example from Khan et al.")); s.appendChild(el("p",null,st.khan)); body.appendChild(s); }
+  if(st.warn){ const s=el("section","warn"); s.appendChild(el("h4",null,"Watch out")); s.appendChild(el("p",null,st.warn)); body.appendChild(s); }
+  const ns = el("div","notes"); const lab = el("label",null,"Your notes"); const tid = "n-"+st.id; lab.htmlFor = tid;
+  const ta = el("textarea"); ta.id = tid; ta.placeholder = "Decisions, links, dates…"; ta.value = state.notes[st.id] || "";
+  let nt=null; ta.addEventListener("input",()=>{ clearTimeout(nt); nt=setTimeout(()=>{ const v=ta.value; if(v) state.notes[st.id]=v; else delete state.notes[st.id]; persist(); },400); });
+  ns.appendChild(lab); ns.appendChild(ta); body.appendChild(ns);
+  det.appendChild(body);
+  card.appendChild(det);
+  li.appendChild(card);
+  return li;
+}
+
+function update(){
+  const total = STEPS.length;
+  const doneN = STEPS.filter(s=>state.done[s.id]).length;
+  const current = STEPS.find(s=>!state.done[s.id]);
+  document.querySelectorAll(".step").forEach(li=>{
+    const id = li.dataset.id; const d = !!state.done[id];
+    li.classList.toggle("done", d);
+    li.classList.toggle("current", !!current && current.id===id);
+    const st = STEPS.find(s=>s.id===id);
+    li.querySelector(".stn").setAttribute("aria-pressed", d ? "true":"false");
+    li.querySelector(".stn").setAttribute("aria-label", `${d?"Mark as not done":"Mark as done"}: ${id} ${st.t}`);
+  });
+  PHASES.forEach(ph=>{
+    const ps = STEPS.filter(s=>s.ph===ph.id); const pd = ps.filter(s=>state.done[s.id]).length;
+    $(`.seg[data-ph="${ph.id}"] .fill`).style.width = (ps.length? (pd/ps.length*100):0)+"%";
+    $(`.pill[data-ph="${ph.id}"] small`).textContent = `${pd}/${ps.length}`;
+    $(`.ovcol[data-ph="${ph.id}"] h3 small`).textContent = `${pd}/${ps.length}`;
+  });
+  $("#count").textContent = `${doneN} of ${total} steps done`;
+  const nx = $("#next");
+  if(current){
+    const ph = PHASES.find(p=>p.id===current.ph);
+    nx.innerHTML = ""; nx.appendChild(el("span",null,"Next up")); nx.appendChild(document.createTextNode(`${current.id} ${current.t}`));
+    nx.style.setProperty("--c", `var(${ph.color})`);
+    nx.onclick = ()=>jump("st-"+current.id, true);
+    nx.disabled = false;
+  } else {
+    nx.innerHTML = ""; nx.appendChild(document.createTextNode("All steps done. Ready to submit.")); nx.onclick=null;
+  }
+  document.querySelectorAll(".pcell").forEach(c=>{
+    const num = +c.dataset.item; const refs = STEPS.filter(s=>s.prisma.includes(num));
+    const dn = refs.filter(s=>state.done[s.id]).length;
+    c.classList.toggle("ok", refs.length>0 && dn===refs.length);
+    c.classList.toggle("part", dn>0 && dn<refs.length);
+  });
+  document.querySelectorAll(".box").forEach(b=>{
+    const id = b.dataset.id;
+    b.classList.toggle("done", !!state.done[id]);
+    b.classList.toggle("current", !!current && current.id===id);
+    b.setAttribute("aria-label", `${id} ${b.title.slice(id.length+1)}${state.done[id]?", done":(current&&current.id===id?", you are here":"")}`);
+  });
+}
+
+function jump(id, openIt){
+  const t = document.getElementById(id); if(!t) return;
+  if(document.body.classList.contains("hide-done") && t.classList.contains("done")){ toggleHide(false); }
+  t.scrollIntoView({block:"start"});
+  if(openIt){ const d = t.querySelector("details"); if(d) d.open = true; const c = t.querySelector(".card"); if(c){ c.classList.remove("flash"); void c.offsetWidth; c.classList.add("flash"); } }
+}
+function toggleHide(force){
+  const on = typeof force==="boolean" ? force : !document.body.classList.contains("hide-done");
+  document.body.classList.toggle("hide-done", on);
+  $("#hideDone").setAttribute("aria-pressed", on?"true":"false");
+}
+
+build(); update();
+$("#hideDone").addEventListener("click",()=>toggleHide());
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{
+  document.querySelectorAll(".tab").forEach(x=>{
+    const on = x===t;
+    x.setAttribute("aria-selected", on?"true":"false");
+    document.getElementById(x.getAttribute("aria-controls")).hidden = !on;
+  });
+}));
+$("#openAll").addEventListener("click",()=>document.querySelectorAll("#main details").forEach(d=>d.open=true));
+$("#closeAll").addEventListener("click",()=>document.querySelectorAll("#main details").forEach(d=>d.open=false));
+$("#reset").addEventListener("click",()=>{
+  if(!confirm("Clear all ticks and notes in this browser? This cannot be undone.")) return;
+  state = {done:{}, notes:{}, updatedAt:Date.now()};
+  document.querySelectorAll(".notes textarea").forEach(t=>t.value="");
+  saveLocal(); update();
+});
+
+</script>
+</body>
+</html>
