@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
-import reports from "virtual:reports";
-import { ReportCard } from "./ReportCard";
+import entries from "virtual:entries";
+import { EntryCard } from "./EntryCard";
 
 const SITE = "arashg.dev";
 
@@ -9,13 +9,13 @@ export function HomePage() {
   const [query, setQuery] = useState("");
 
   const projects = useMemo(
-    () => [...new Set(reports.map((r) => r.project).filter(Boolean))].sort(),
+    () => [...new Set(entries.map((r) => r.project).filter(Boolean))].sort(),
     [],
   );
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return reports.filter((r) => {
+    return entries.filter((r) => {
       if (project && r.project !== project) return false;
       if (!q) return true;
       return [r.title, r.summary, r.project, ...r.tags].join(" ").toLowerCase().includes(q);
@@ -38,7 +38,7 @@ export function HomePage() {
           </p>
         </header>
 
-        {reports.length > 0 && (
+        {entries.length > 0 && (
           <div className="hp-tools">
             {projects.length > 1 && (
               <div className="hp-filters" role="group" aria-label="Filter by project">
@@ -52,12 +52,12 @@ export function HomePage() {
                 ))}
               </div>
             )}
-            {reports.length > 6 && (
+            {entries.length > 6 && (
               <input
                 className="hp-search"
                 type="search"
                 placeholder="Search"
-                aria-label="Search reports"
+                aria-label="Search entries"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
@@ -65,16 +65,16 @@ export function HomePage() {
           </div>
         )}
 
-        {reports.length === 0 ? (
+        {entries.length === 0 ? (
           <div className="hp-empty">Nothing here yet.</div>
         ) : visible.length === 0 ? (
           <div className="hp-empty">
-            No reports match. <button type="button" className="hp-link" onClick={() => { setProject(""); setQuery(""); }}>Show all</button>
+            No entries match. <button type="button" className="hp-link" onClick={() => { setProject(""); setQuery(""); }}>Show all</button>
           </div>
         ) : (
           <div className="hp-grid">
             {visible.map((r) => (
-              <ReportCard key={r.slug} report={r} />
+              <EntryCard key={r.slug} entry={r} />
             ))}
           </div>
         )}

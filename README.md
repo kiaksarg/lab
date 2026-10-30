@@ -2,35 +2,36 @@
 
 Working documents and visualisations from my research, served at **https://arashg.dev/lab/**.
 
-A small Vite + React + TypeScript homepage lists every report. The reports themselves are
+A small Vite + React + TypeScript homepage lists every entry. The entries themselves are
 self-contained HTML files that are copied to the site untouched.
 
 ```
 lab/
-├── reports/                  ← content: one folder per report
-│   └── 2026-10-scoping-review-roadmap/
-│       ├── index.html        ← the report (self-contained HTML)
+├── entries/                  ← content: one folder per entry
+│   └── scoping-review-roadmap/
+│       ├── index.html        ← the entry (self-contained HTML)
 │       ├── meta.json         ← listing info
 │       └── thumb.png         ← optional card image (16:9)
 ├── src/                      ← homepage code (React)
-├── scripts/                  ← report validation + `npm run new`
-├── vite.config.ts            ← base /lab/, copies reports/, builds the report list
+├── scripts/                  ← entry validation + `npm run new`
+├── vite.config.ts            ← base /lab/, copies entries/, builds the entry list
 └── .github/workflows/        ← build + deploy to GitHub Pages on push to main
 ```
 
-## Add a report
+## Add a entry
 
 ```bash
 npm run new -- "Screening results, round 1"
-# → reports/2026-11-screening-results-round-1/meta.json
+# → entries/screening-results-round-1/meta.json
 # put the HTML in that folder as index.html, fill in meta.json, then:
-git add reports && git commit -m "report: screening results round 1" && git push
+git add entries && git commit -m "entry: screening results round 1" && git push
 ```
 
-No terminal? On GitHub use **Add file → Upload files**, type `reports/2026-11-my-report/` before
+No terminal? On GitHub use **Add file → Upload files**, type `entries/my-entry/` before
 the file name, and drop in `index.html` and `meta.json`. The site redeploys in about a minute.
 
-The report URL is the folder name: `arashg.dev/lab/2026-11-my-report/`.
+The entry URL is the folder name: `arashg.dev/lab/my-entry/`. Use lowercase letters, digits and
+hyphens. Pick it once: renaming a folder changes the URL and breaks links you have already shared.
 
 ### meta.json
 
@@ -38,7 +39,7 @@ The report URL is the folder name: `arashg.dev/lab/2026-11-my-report/`.
 |--------------|----------|-------|
 | `title`      | yes      | Falls back to the page `<title>` |
 | `summary`    | no       | One or two sentences; falls back to the page meta description |
-| `date`       | yes      | `YYYY-MM-DD` |
+| `date`       | yes      | `YYYY-MM-DD`; used for sorting and shown on the card |
 | `project`    | no       | Becomes a filter on the homepage |
 | `tags`       | no       | List of strings |
 | `status`     | yes      | `draft`, `review` (shared for feedback), `final`, `archived` |
@@ -65,7 +66,7 @@ Everything on GitHub Pages is public, including the repo history.
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173/lab/ (reports open at /lab/<slug>/ like in production)
+npm run dev        # http://localhost:5173/lab/ (entries open at /lab/<slug>/ like in production)
 npm run build      # check + typecheck + build to dist/
 npm run preview
 ```

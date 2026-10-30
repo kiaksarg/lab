@@ -3,13 +3,13 @@ import { mkdirSync, writeFileSync, existsSync } from "node:fs";
 
 const title = process.argv.slice(2).join(" ").trim();
 if (!title) {
-  console.error('Usage: npm run new -- "Report title"');
+  console.error('Usage: npm run new -- "Entry title"');
   process.exit(1);
 }
 const today = new Date().toISOString().slice(0, 10);
 const name = title.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 50);
-const slug = `${today.slice(0, 7)}-${name}`;
-const dir = `reports/${slug}`;
+const slug = name;
+const dir = `entries/${slug}`;
 if (existsSync(dir)) {
   console.error(`${dir} already exists`);
   process.exit(1);

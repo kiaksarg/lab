@@ -1,6 +1,6 @@
-import type { Report, ReportStatus } from "./types";
+import type { Entry, EntryStatus } from "./types";
 
-const STATUS_LABEL: Record<ReportStatus, string> = {
+const STATUS_LABEL: Record<EntryStatus, string> = {
   draft: "Working draft",
   review: "Shared for feedback",
   final: "Final",
@@ -16,7 +16,7 @@ function formatDate(iso: string) {
     : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
 
-export function ReportCard({ report: r }: { report: Report }) {
+export function EntryCard({ entry: r }: { entry: Entry }) {
   const href = `${base}${r.slug}/`;
   const tags = [...new Set([r.project, ...r.tags].filter(Boolean))];
 

@@ -1,5 +1,5 @@
-declare module "virtual:reports" {
-  import type { Report } from "./types";
-  const reports: Report[];
-  export default reports;
+declare module "virtual:entries" {
+  import type { Entry } from "./types";
+  const entries: Entry[];
+  export default entries;
 }

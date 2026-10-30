@@ -1,6 +1,6 @@
-export type ReportStatus = "draft" | "review" | "final" | "archived";
+export type EntryStatus = "draft" | "review" | "final" | "archived";
 
-export interface Report {
+export interface Entry {
   slug: string;
   title: string;
   summary: string;
@@ -8,10 +8,10 @@ export interface Report {
   date: string;
   project: string;
   tags: string[];
-  status: ReportStatus;
+  status: EntryStatus;
   /** How the page was made, e.g. "Drafted with Claude; reviewed by …". Empty if not stated. */
   aiAssisted: string;
   listed: boolean;
-  /** File name inside the report folder, or "" */
+  /** File name inside the entry folder, or "" */
   thumb: string;
 }

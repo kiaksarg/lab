@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "check": "node scripts/check-reports.mjs",
+    "check": "node scripts/check-entries.mjs",
     "build": "npm run check && npm run typecheck && vite build",
     "preview": "vite preview",
-    "new": "node scripts/new-report.mjs",
+    "new": "node scripts/new-entry.mjs",
     "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.node.json"
   },
   "dependencies": {
