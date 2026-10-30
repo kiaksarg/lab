@@ -33,9 +33,9 @@ export function HomePage() {
           </nav>
           <h1 className="hp-title">Lab</h1>
           <p className="hp-sub">
-            Working documents from my research: method roadmaps, review snapshots and
-            interactive visualisations. Each entry says how it was made and how final it is.
-          </p>
+          Interactive visualisations, exploratory dashboards, and working artifacts
+          built to explore and communicate ideas.
+            </p>
         </header>
 
         {entries.length > 0 && (

@@ -1,81 +1,76 @@
 # Lab
 
-Working documents and visualisations from my research, served at **https://arashg.dev/lab/**.
+Interactive visualisations, exploratory dashboards and working documents from my research.
 
-A small Vite + React + TypeScript homepage lists every entry. The entries themselves are
-self-contained HTML files that are copied to the site untouched.
+**Live site:** [arashg.dev/lab](https://arashg.dev/lab/)
+
+Each entry is a self-contained HTML page, published as-is. A small Vite + React + TypeScript
+homepage lists them, with filters by project and a status and provenance note on every card.
+
+## Structure
 
 ```
 lab/
-├── entries/                  ← content: one folder per entry
+├── entries/                  one folder per entry
 │   └── scoping-review-roadmap/
-│       ├── index.html        ← the entry (self-contained HTML)
-│       ├── meta.json         ← listing info
-│       └── thumb.png         ← optional card image (16:9)
-├── src/                      ← homepage code (React)
-├── scripts/                  ← entry validation + `npm run new`
-├── vite.config.ts            ← base /lab/, copies entries/, builds the entry list
-└── .github/workflows/        ← build + deploy to GitHub Pages on push to main
+│       ├── index.html        the entry (self-contained HTML)
+│       ├── meta.json         title, date, status, provenance
+│       └── thumb.png         optional card image (16:9)
+├── src/                      homepage
+├── scripts/                  validation and scaffolding
+└── vite.config.ts            base path, entry list, dev routing
 ```
 
-## Add a entry
+## Adding an entry
 
 ```bash
 npm run new -- "Screening results, round 1"
-# → entries/screening-results-round-1/meta.json
-# put the HTML in that folder as index.html, fill in meta.json, then:
-git add entries && git commit -m "entry: screening results round 1" && git push
 ```
 
-No terminal? On GitHub use **Add file → Upload files**, type `entries/my-entry/` before
-the file name, and drop in `index.html` and `meta.json`. The site redeploys in about a minute.
-
-The entry URL is the folder name: `arashg.dev/lab/my-entry/`. Use lowercase letters, digits and
-hyphens. Pick it once: renaming a folder changes the URL and breaks links you have already shared.
+This creates `entries/screening-results-round-1/meta.json`. Add the page as `index.html` in the
+same folder, fill in the metadata, and push. The folder name becomes the URL
+(`arashg.dev/lab/screening-results-round-1/`), so choose it once.
 
 ### meta.json
 
-| Field        | Required | Notes |
-|--------------|----------|-------|
-| `title`      | yes      | Falls back to the page `<title>` |
-| `summary`    | no       | One or two sentences; falls back to the page meta description |
-| `date`       | yes      | `YYYY-MM-DD`; used for sorting and shown on the card |
-| `project`    | no       | Becomes a filter on the homepage |
+| Field        | Required | Description |
+|--------------|----------|-------------|
+| `title`      | yes      | Shown on the card |
+| `date`       | yes      | `YYYY-MM-DD`, used for sorting |
+| `status`     | yes      | `draft`, `review`, `final` or `archived` |
+| `aiAssisted` | yes      | How the entry was made, or `false` if no AI was used |
+| `summary`    | no       | One or two sentences |
+| `project`    | no       | Groups entries and adds a filter |
 | `tags`       | no       | List of strings |
-| `status`     | yes      | `draft`, `review` (shared for feedback), `final`, `archived` |
-| `aiAssisted` | yes      | How it was made, e.g. "Drafted with Claude; reviewed by Arash Goodarzi." Use `false` if no AI was used |
-| `listed`     | no       | `false` hides it from the homepage but the URL still works. **This is not access control.** |
-| `thumb`      | no       | File name inside the folder |
+| `thumb`      | no       | Image file name in the entry folder |
+| `listed`     | no       | `false` hides the entry from the homepage; its URL stays public |
 
-`npm run check` validates every folder. The build fails on errors and warns about missing
-provenance notes or email addresses inside a page.
+`npm run check` validates all entries; the build fails on errors.
 
-## Before you publish
+## Publishing principles
 
-Everything on GitHub Pages is public, including the repo history.
+- **Transparency.** Every entry states its status and how it was made, including AI assistance.
+  AI-drafted figures, quotes and citations are verified against their sources before an entry
+  leaves `draft`.
+- **No personal data.** Entries contain no information about participants, interviewees or other
+  identifiable people beyond published authorship (GDPR). Git history is permanent, so this is
+  checked before committing, not after.
+- **Shared material only.** Unpublished data or text appears only with co-authors' agreement.
 
-- No personal data about participants, interviewees or other third parties (GDPR). Authors of
-  published papers are fine; screening notes or comments about named people are not. Deleting a
-  file later does not remove it from git history.
-- No unpublished data, text or figures that co-authors have not agreed to share.
-- AI-drafted numbers, quotes and citations are checked against the source before the status
-  moves past `draft`.
-- Pages that must be restricted (e.g. supervisors only) need real authentication and do not belong here.
-
-## Develop
+## Development
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173/lab/ (entries open at /lab/<slug>/ like in production)
-npm run build      # check + typecheck + build to dist/
+npm run dev       # http://localhost:5173/lab/
+npm run build     # validate, typecheck, build to dist/
 npm run preview
 ```
 
-## One-time setup
+## Deployment
 
-1. Repo **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-2. Push to `main`.
+Pushes to `main` build and deploy to GitHub Pages via GitHub Actions. The site inherits the
+`arashg.dev` domain from the user site, so no CNAME file is needed here.
 
-The user site `kiaksarg.github.io` has the custom domain `arashg.dev`, so this repo is served at
-`arashg.dev/lab/` automatically. Do not add a CNAME file here, and keep `/lab` free in the main
-site's routes.
+## License
+
+Code: [Apache-2.0](LICENSE). Entry content: © Arash Goodarzi unless stated otherwise.
