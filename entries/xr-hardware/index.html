@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>XR headsets and glasses for knowledge work</title>
+  <meta name="description"
+    content="Consumer and prosumer XR headsets and display glasses that can show virtual monitors, compared against the hardware targets for knowledge work proposed by Biener et al. (2026).">
+  <style>
+    :root {
+      --bg: #F3F5F8;
+      --surface: #FFFFFF;
+      --sunk: #EBEEF3;
+      --ink: #18202E;
+      --muted: #5A6476;
+      --faint: #8A93A3;
+      --line: #D9DEE6;
+      --grid: #E6E9EE;
+      --axis: #C3C8D1;
+      --s1: #2a78d6;
+      --s2: #eb6834;
+      --s3: #1baf7a;
+      --good: #0ca30c;
+      --good-ink: #006300;
+      --good-bg: #E7F5E7;
+      --meter: #C9CED8;
+      --track: #EEF0F4;
+      --zone: rgba(12, 163, 12, .08);
+      --warn-bg: #FFF4E0;
+      --warn-ink: #6B4300;
+      color-scheme: light;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:where(:not([data-theme="light"])) {
+        --bg: #12161D;
+        --surface: #1A2029;
+        --sunk: #151A22;
+        --ink: #E7EBF2;
+        --muted: #9AA4B5;
+        --faint: #6F7A8C;
+        --line: #2C3440;
+        --grid: #242B36;
+        --axis: #384150;
+        --s1: #3987e5;
+        --s2: #d95926;
+        --s3: #199e70;
+        --good: #0ca30c;
+        --good-ink: #3FCB3F;
+        --good-bg: #16301B;
+        --meter: #3C4655;
+        --track: #222A35;
+        --zone: rgba(12, 163, 12, .12);
+        --warn-bg: #2E2414;
+        --warn-ink: #F2CF8E;
+        color-scheme: dark;
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #12161D;
+      --surface: #1A2029;
+      --sunk: #151A22;
+      --ink: #E7EBF2;
+      --muted: #9AA4B5;
+      --faint: #6F7A8C;
+      --line: #2C3440;
+      --grid: #242B36;
+      --axis: #384150;
+      --s1: #3987e5;
+      --s2: #d95926;
+      --s3: #199e70;
+      --good: #0ca30c;
+      --good-ink: #3FCB3F;
+      --good-bg: #16301B;
+      --meter: #3C4655;
+      --track: #222A35;
+      --zone: rgba(12, 163, 12, .12);
+      --warn-bg: #2E2414;
+      --warn-ink: #F2CF8E;
+      color-scheme: dark;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    html {
+      scroll-padding-top: 80px
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 400 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      padding: env(safe-area-inset-top, 0) 0 env(safe-area-inset-bottom, 0)
+    }
+
+    h1,
+    h2 {
+      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+      font-weight: 600;
+      letter-spacing: -.01em;
+      margin: 0
+    }
+
+    a {
+      color: var(--s1)
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+      color: inherit
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--s1);
+      outline-offset: 2px;
+      border-radius: 4px
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 20px
+    }
+
+    .num {
+      font-variant-numeric: tabular-nums
+    }
+
+    /* Header */
+    header {
+      padding: 36px 0 8px
+    }
+
+    .crumb {
+      font-size: .72rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted)
+    }
+
+    .crumb a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    .crumb a:hover {
+      color: var(--ink)
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 4.2vw, 2.6rem);
+      line-height: 1.1;
+      margin-top: 8px
+    }
+
+    .lede {
+      color: var(--muted);
+      max-width: 70ch;
+      margin: 8px 0 0
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 16px;
+      margin-top: 10px;
+      font-size: .8rem;
+      color: var(--muted)
+    }
+
+    .meta b {
+      color: var(--ink);
+      font-weight: 600
+    }
+
+    .draft {
+      background: var(--warn-bg);
+      color: var(--warn-ink);
+      border-radius: 4px;
+      padding: 0 6px;
+      font-weight: 600
+    }
+
+    .theme {
+      margin-left: auto;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 6px;
+      padding: 2px 9px;
+      cursor: pointer;
+      font-size: .78rem
+    }
+
+    /* Targets */
+    .targets {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr) 1.25fr;
+      gap: 10px;
+      margin: 22px 0 0
+    }
+
+    .tgt {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px
+    }
+
+    .tgt .k {
+      font-size: .72rem;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--muted)
+    }
+
+    .tgt .v {
+      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+      font-size: 1.7rem;
+      line-height: 1.15;
+      margin-top: 2px
+    }
+
+    .tgt .d {
+      font-size: .8rem;
+      color: var(--muted)
+    }
+
+    .tgt.src {
+      background: transparent;
+      border-style: dashed;
+      font-size: .8rem;
+      color: var(--muted)
+    }
+
+    .tgt.src p {
+      margin: 0 0 6px
+    }
+
+    .tgt.src b {
+      color: var(--ink)
+    }
+
+    /* Chart */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      margin-top: 22px;
+      padding: 16px 18px 10px
+    }
+
+    .panel-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 4px 18px
+    }
+
+    .panel h2 {
+      font-size: 1.15rem
+    }
+
+    .panel .sub {
+      color: var(--muted);
+      font-size: .85rem
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 16px;
+      font-size: .8rem;
+      color: var(--muted);
+      margin: 8px 0 2px
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .legend svg {
+      flex: none
+    }
+
+    .chart {
+      position: relative
+    }
+
+    .chart svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible
+    }
+
+    .chart .gl {
+      stroke: var(--grid);
+      stroke-width: 1
+    }
+
+    .chart .ax {
+      stroke: var(--axis);
+      stroke-width: 1
+    }
+
+    .chart .tk {
+      fill: var(--muted);
+      font-size: 11px
+    }
+
+    .chart .at {
+      fill: var(--muted);
+      font-size: 11.5px
+    }
+
+    .chart .tl {
+      stroke: var(--good);
+      stroke-width: 1.5;
+      stroke-dasharray: 4 4
+    }
+
+    .chart .zone {
+      fill: var(--zone)
+    }
+
+    .chart .zl {
+      fill: var(--good-ink);
+      font-size: 11.5px;
+      font-weight: 600
+    }
+
+    .chart .lbl {
+      fill: var(--ink);
+      font-size: 11.5px;
+      paint-order: stroke;
+      stroke: var(--surface);
+      stroke-width: 3px;
+      stroke-linejoin: round;
+      pointer-events: none
+    }
+
+    .chart .pt {
+      cursor: pointer;
+      stroke-width: 2
+    }
+
+    .chart .pt.dim {
+      opacity: .18
+    }
+
+    .chart .hit {
+      fill: transparent;
+      cursor: pointer
+    }
+
+    .tip {
+      position: absolute;
+      pointer-events: none;
+      background: var(--ink);
+      color: var(--bg);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: .78rem;
+      line-height: 1.4;
+      max-width: 260px;
+      opacity: 0;
+      transform: translate(-50%, calc(-100% - 12px));
+      transition: opacity .1s;
+      z-index: 3
+    }
+
+    .tip b {
+      font-weight: 600
+    }
+
+    .tip .tm {
+      opacity: .75
+    }
+
+    .chart-note {
+      font-size: .78rem;
+      color: var(--muted);
+      margin: 2px 0 4px
+    }
+
+    /* Controls */
+    .controls {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: color-mix(in srgb, var(--bg) 90%, transparent);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      margin-top: 22px;
+      border-bottom: 1px solid var(--line)
+    }
+
+    .controls .wrap {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 14px;
+      padding-top: 10px;
+      padding-bottom: 10px
+    }
+
+    .search {
+      flex: 1 1 180px;
+      max-width: 260px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 6px 10px
+    }
+
+    .seg {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--surface)
+    }
+
+    .seg button {
+      border: 0;
+      background: none;
+      padding: 5px 10px;
+      font-size: .82rem;
+      cursor: pointer;
+      border-right: 1px solid var(--line);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .seg button:last-child {
+      border-right: 0
+    }
+
+    .seg button[aria-pressed="true"] {
+      background: var(--ink);
+      color: var(--bg)
+    }
+
+    .sortsel {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 5px 8px;
+      font-size: .82rem
+    }
+
+    .count {
+      font-size: .8rem;
+      color: var(--muted);
+      margin-left: auto
+    }
+
+    /* Table */
+    .tbl-wrap {
+      margin-top: 12px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: clip
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    thead th {
+      position: sticky;
+      top: 56px;
+      background: var(--sunk);
+      z-index: 2;
+      text-align: left;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap
+    }
+
+    thead th button,
+    thead th span {
+      display: block;
+      width: 100%;
+      text-align: inherit;
+      background: none;
+      border: 0;
+      padding: 9px 10px;
+      cursor: pointer;
+      font: inherit;
+      letter-spacing: inherit;
+      text-transform: inherit;
+      color: inherit
+    }
+
+    thead th span {
+      cursor: default
+    }
+
+    thead th button:hover {
+      color: var(--ink)
+    }
+
+    thead th[aria-sort] button::after {
+      content: "";
+      display: inline-block;
+      margin-left: 5px;
+      border: 4px solid transparent;
+      vertical-align: middle
+    }
+
+    thead th[aria-sort="ascending"] button::after {
+      border-bottom-color: currentColor;
+      margin-top: -5px
+    }
+
+    thead th[aria-sort="descending"] button::after {
+      border-top-color: currentColor;
+      margin-top: 3px
+    }
+
+    thead th[aria-sort] {
+      color: var(--ink)
+    }
+
+    th.r,
+    td.r {
+      text-align: right
+    }
+
+    tbody tr.row {
+      border-top: 1px solid var(--line);
+      cursor: pointer
+    }
+
+    tbody tr.row:first-child {
+      border-top: 0
+    }
+
+    tbody tr.row:hover {
+      background: color-mix(in srgb, var(--sunk) 60%, transparent)
+    }
+
+    tbody tr.row.flash {
+      animation: flash 1.4s ease
+    }
+
+    @keyframes flash {
+
+      0%,
+      40% {
+        background: color-mix(in srgb, var(--s1) 18%, transparent)
+      }
+
+      100% {
+        background: transparent
+      }
+    }
+
+    td {
+      padding: 9px 8px;
+      vertical-align: middle
+    }
+
+    .rk {
+      color: var(--faint);
+      font-size: .8rem;
+      width: 34px
+    }
+
+    .dev {
+      min-width: 210px
+    }
+
+    .dev .nm {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600
+    }
+
+    .dev .nm a {
+      color: var(--ink);
+      text-decoration: none
+    }
+
+    .dev .nm a:hover {
+      text-decoration: underline
+    }
+
+    .dev .nm .ext {
+      color: var(--muted);
+      font-weight: 400;
+      font-size: .85em
+    }
+
+    .dev .mk {
+      font-size: .78rem;
+      color: var(--muted);
+      margin-top: 1px
+    }
+
+    .mark {
+      flex: none;
+      display: inline-block
+    }
+
+    .st {
+      display: inline-block;
+      font-size: .7rem;
+      font-weight: 600;
+      border-radius: 4px;
+      padding: 0 6px;
+      margin-top: 3px;
+      border: 1px solid var(--line);
+      color: var(--muted)
+    }
+
+    .st.sale {
+      border-color: transparent;
+      background: var(--good-bg);
+      color: var(--good-ink)
+    }
+
+    .st.pre,
+    .st.ann {
+      border-style: dashed;
+      color: var(--ink)
+    }
+
+    .st.old,
+    .st.proto {
+      color: var(--faint)
+    }
+
+    .form {
+      font-size: .82rem;
+      color: var(--muted);
+      min-width: 110px
+    }
+
+    .form b {
+      display: block;
+      color: var(--ink);
+      font-weight: 500
+    }
+
+    .m {
+      white-space: nowrap;
+      min-width: 90px
+    }
+
+    .m .val {
+      display: block;
+      font-weight: 600
+    }
+
+    .m .val.est {
+      font-weight: 400;
+      font-style: italic
+    }
+
+    .m .val.na {
+      font-weight: 400;
+      color: var(--faint)
+    }
+
+    .bar {
+      position: relative;
+      display: block;
+      height: 6px;
+      width: 72px;
+      border-radius: 3px;
+      background: var(--track);
+      margin-top: 4px;
+      overflow: hidden
+    }
+
+    .bar i {
+      position: absolute;
+      inset: 0 auto 0 0;
+      border-radius: 3px;
+      background: var(--meter)
+    }
+
+    .bar.ok i {
+      background: var(--good)
+    }
+
+    .m.r .bar {
+      margin-left: auto
+    }
+
+    .res {
+      font-size: .82rem;
+      white-space: nowrap
+    }
+
+    .res small {
+      display: block;
+      color: var(--muted)
+    }
+
+    .price {
+      font-size: .82rem;
+      max-width: 130px;
+      line-height: 1.35
+    }
+
+    .fit {
+      white-space: nowrap
+    }
+
+    .pip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      font-size: .64rem;
+      font-weight: 700;
+      margin-right: 2px;
+      border: 1.5px solid var(--meter);
+      color: var(--faint)
+    }
+
+    .pip.ok {
+      background: var(--good);
+      border-color: var(--good);
+      color: #fff
+    }
+
+    .pip.unk {
+      border-style: dashed
+    }
+
+    tr.det td {
+      padding: 0 10px 14px 44px;
+      background: color-mix(in srgb, var(--sunk) 45%, transparent)
+    }
+
+    .det-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 8px 22px;
+      font-size: .84rem;
+      padding-top: 10px
+    }
+
+    .det-grid dt {
+      font-size: .7rem;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--muted)
+    }
+
+    .det-grid dd {
+      margin: 1px 0 0
+    }
+
+    .det-note {
+      grid-column: 1/-1
+    }
+
+    .chk {
+      font-size: .75rem;
+      color: var(--muted)
+    }
+
+    .chk.no {
+      color: var(--warn-ink)
+    }
+
+    .empty {
+      padding: 28px;
+      text-align: center;
+      color: var(--muted)
+    }
+
+    /* Footer notes */
+    .notes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 26px 0 40px;
+      font-size: .83rem;
+      color: var(--muted)
+    }
+
+    .notes h2 {
+      font-size: 1rem;
+      color: var(--ink);
+      margin-bottom: 6px
+    }
+
+    .notes ul {
+      margin: 0;
+      padding-left: 1.1em
+    }
+
+    .notes li {
+      margin: 3px 0
+    }
+
+    .notes section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 16px
+    }
+
+    @media (max-width:900px) {
+      .targets {
+        grid-template-columns: repeat(3, 1fr)
+      }
+
+      .tgt.src {
+        grid-column: 1/-1
+      }
+
+      .notes {
+        grid-template-columns: 1fr
+      }
+    }
+
+    @media (max-width:760px) {
+      .wrap {
+        padding: 0 14px
+      }
+
+      .targets {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 6px
+      }
+
+      .tgt {
+        padding: 10px
+      }
+
+      .tgt .v {
+        font-size: 1.3rem
+      }
+
+      .tgt .d {
+        font-size: .72rem
+      }
+
+      .count {
+        margin-left: 0
+      }
+
+      .panel {
+        padding: 14px 12px 8px
+      }
+
+      .chart {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch
+      }
+
+      .chart svg {
+        min-width: 640px
+      }
+
+      thead {
+        display: none
+      }
+
+      table,
+      tbody {
+        display: block
+      }
+
+      tbody tr.row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px 10px;
+        padding: 12px 14px
+      }
+
+      tbody tr.row td {
+        padding: 0
+      }
+
+      tbody tr.row td.rk {
+        display: none
+      }
+
+      tbody tr.row td.dev {
+        grid-column: 1/-1
+      }
+
+      tbody tr.row td.form {
+        grid-column: 1/-1;
+        min-width: 0
+      }
+
+      tbody tr.row td.form b {
+        display: inline
+      }
+
+      tbody tr.row td.form b::after {
+        content: " · "
+      }
+
+      tbody tr.row td.m {
+        min-width: 0;
+        text-align: left
+      }
+
+      tbody tr.row td.m::before {
+        content: attr(data-k);
+        display: block;
+        font-size: .66rem;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        color: var(--muted)
+      }
+
+      .m.r .bar {
+        margin-left: 0
+      }
+
+      .bar {
+        width: 100%
+      }
+
+      tbody tr.row td.res,
+      tbody tr.row td.price {
+        grid-column: span 1
+      }
+
+      tbody tr.row td.fit {
+        grid-column: span 1
+      }
+
+      tr.det {
+        display: block
+      }
+
+      tr.det td {
+        display: block;
+        padding: 0 14px 14px
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      tbody tr.row.flash {
+        animation: none
+      }
+    }
+
+    @media print {
+
+      .controls,
+      .theme {
+        display: none
+      }
+
+      thead th {
+        position: static
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="wrap">
+    <div class="crumb"><a href="../">Lab</a> · xr-hardware</div>
+    <h1>XR headsets and glasses for knowledge work</h1>
+    <p class="lede">Consumer and prosumer head-worn displays that can show virtual monitors, checked against the
+      hardware targets for sustained knowledge work.</p>
+    <div class="meta">
+      <span>Specs checked <b>18 Nov 2026</b></span>
+      <span><b id="nDev">–</b> devices</span>
+      <span class="draft">Draft</span>
+      <span class="draft">AI Generated</span>
+      <button class="theme" id="themeBtn" type="button" aria-label="Toggle colour theme">Theme</button>
+    </div>
+
+    <div class="targets" aria-label="Hardware targets">
+      <div class="tgt">
+        <div class="k">Weight</div>
+        <div class="v num">&lt; 100 g</div>
+        <div class="d">for all-day wear</div>
+      </div>
+      <div class="tgt">
+        <div class="k">Horizontal FOV</div>
+        <div class="v num">≥ 80°</div>
+        <div class="d">per eye, 60° stereo overlap</div>
+      </div>
+      <div class="tgt">
+        <div class="k">Pixel density</div>
+        <div class="v num">≥ 60 PPD</div>
+        <div class="d">in the central field of view</div>
+      </div>
+      <div class="tgt src">
+        <p>Together these imply <b>≈ 4,800 px horizontal per eye</b> (80° × 60 PPD).</p>
+        <p>Targets from Biener et al., <a href="https://doi.org/10.1109/MCG.2026.3702793">XR for Knowledge Work: Ten
+            Challenges</a>, <i>IEEE Computer Graphics and Applications</i>, Jul/Aug 2026 (Hardware section).</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <section class="panel" aria-labelledby="chartTitle">
+        <div class="panel-head">
+          <h2 id="chartTitle">Pixel density vs field of view</h2>
+          <span class="sub" id="chartSub">The shaded corner is the target. Solid marks weigh under 100 g.</span>
+        </div>
+        <div class="legend" id="legend"></div>
+        <div class="chart" id="chart"></div>
+        <p class="chart-note">Devices without a published resolution or FOV are not plotted. Italic values in the table
+          are estimates. Click a mark to jump to its row.</p>
+      </section>
+    </div>
+
+    <div class="controls">
+      <div class="wrap">
+        <input class="search" id="q" type="search" placeholder="Search device or maker" aria-label="Search devices">
+        <div class="seg" role="group" aria-label="Form factor" id="formSeg"></div>
+        <div class="seg" role="group" aria-label="Availability" id="availSeg"></div>
+        <label><span class="sr" hidden>Sort</span>
+          <select class="sortsel" id="sortSel" aria-label="Sort by">
+            <option value="rank">Sort: relevance</option>
+            <option value="w">Lightest first</option>
+            <option value="fov">Widest FOV first</option>
+            <option value="ppd">Sharpest first</option>
+            <option value="fit">Most targets met</option>
+            <option value="price">Cheapest first</option>
+            <option value="n">Name A–Z</option>
+          </select>
+        </label>
+        <span class="count" id="count"></span>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="tbl-wrap">
+        <table id="tbl">
+          <thead>
+            <tr>
+              <th class="r" data-k="rank"><button type="button"
+                  title="Default order: relevance to knowledge-work research">#</button></th>
+              <th data-k="n"><button type="button">Device</button></th>
+              <th><span>Form · compute</span></th>
+              <th data-k="w"><button type="button">Weight</button></th>
+              <th data-k="fov"><button type="button">H-FOV</button></th>
+              <th data-k="ppd"><button type="button">PPD</button></th>
+              <th><span>Res. per eye</span></th>
+              <th data-k="price"><button type="button">Price (US)</button></th>
+              <th data-k="fit"><button type="button" title="Weight, FOV, PPD targets met">Targets</button></th>
+            </tr>
+          </thead>
+          <tbody id="tb"></tbody>
+        </table>
+      </div>
+
+      <div class="notes">
+        <section>
+          <!-- <h2>How to read this</h2> -->
+          AI-generated content — facts and citations may be inaccurate.
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+      const T = { w: 100, fov: 80, ppd: 60 };
+      const FORMS = { g: "Glasses", h: "Headset", p: "PC VR headset" };
+      const STATUS_GROUP = { sale: "now", pre: "soon", ann: "soon", old: "past", proto: "past" };
+
+      /* f: g glasses · h headset · p PC VR. *E = estimate. chk: 2 checked, 1 partly, 0 carried over.
+         fov = horizontal degrees used for comparison; fovS = as stated by maker. */
+      const D = [
+        { r: 1, n: "Apple Vision Pro (M5)", m: "Apple", y: 2025, f: "h", st: "sale", stT: "On sale · Oct 2025", res: "≈3660 × 3200", disp: "Micro-OLED", fov: 100, fovE: 1, fovS: "≈100° (Apple publishes no FOV)", ppd: 34, ppdE: 1, w: 750, wS: "750–800 g with Light Seal and band; 353 g battery on a cable", cpu: "Standalone", cpuS: "Apple M5 + R1, visionOS", price: 3499, priceS: "$3,499", url: "https://www.apple.com/apple-vision-pro/specs/", src: [["Apple specs", "https://www.apple.com/apple-vision-pro/specs/"]], chk: 2, note: "Reference device for spatial productivity. Same display system as the M2 model; resolution and FOV are teardown and reviewer estimates." },
+        { r: 2, n: "Samsung Galaxy XR", m: "Samsung", y: 2025, f: "h", st: "sale", stT: "On sale · Oct 2025", res: "3552 × 3840", disp: "Micro-OLED", fov: 109, fovS: "109° H × 100° V", ppd: 33, ppdE: 1, w: 545, wS: "545 g; 302 g battery on a cable", cpu: "Standalone", cpuS: "Snapdragon XR2+ Gen 2, Android XR", price: 1799, priceS: "$1,799", url: "https://www.samsung.com/us/xr/galaxy-xr/galaxy-xr/", src: [["Road to VR", "https://roadtovr.com/samsung-galaxy-xr-headset-price-specs-release-date/"]], chk: 2, note: "Highest per-eye pixel count among standalone headsets. Iris recognition (biometric data)." },
+        { r: 3, n: "Meta VR Glasses", m: "Meta", y: 2027, f: "g", st: "ann", stT: "Announced · spring 2027", res: "2412 × 2288", disp: "Micro-OLED", fov: 70, fovS: "70° H × 66° V", ppd: 37, wS: "≈100 g glasses (Meta); ≈300 g compute puck", w: 100, wApprox: 1, cpu: "Puck", cpuS: "Snapdragon puck (XR2 Gen 3 per Road to VR), 12 GB RAM", price: 1299, priceS: "$1,299", url: "https://www.meta.com/vr-glasses/", src: [["vr.org summary", "https://vr.org/meta-vr-glasses"], ["UploadVR", "https://uploadvr.com/meta-vr-glasses-officially-announced-connect-2026"]], chk: 2, note: "Closest announced device to the combined target. Meta quotes 37 PPD; 2412 px ÷ 70° gives ≈34." },
+        { r: 4, n: "XREAL Aura", m: "XREAL", y: 2026, f: "g", st: "sale", stT: "Shipping · from 17 Nov 2026", res: "1920 × 1200", disp: "Micro-OLED (Sony), optical see-through", fov: 61, fovE: 1, fovS: "70° diagonal", ppd: 32, w: 95, wS: "95 g glasses; puck weight not published", cpu: "Puck", cpuS: "Snapdragon puck, Android XR", price: 1279, priceS: "$1,279 ($1,099 launch offer)", url: "https://us.shop.xreal.com/products/xreal-aura", src: [["MIXED spec sheet", "https://mixed-news.com/en/xreal-aura-spec-sheet-1920x1200-1050-nits-95g-48-tops-puck/"], ["Tom's Guide", "https://www.tomsguide.com/computing/smart-glasses/xreals-android-xr-powered-aura-smart-glasses-just-launched-for-usd1-099-thanks-to-a-limited-time-offer"]], chk: 2, note: "First Android XR glasses; widest FOV of any shipping display glasses. 1,050 nits." },
+        { r: 5, n: "Meta Quest 3", m: "Meta", y: 2023, f: "h", st: "sale", stT: "On sale", res: "2064 × 2208", disp: "LCD, pancake lenses", fov: 110, fovS: "110° H", ppd: 25, w: 515, wS: "515 g", cpu: "Standalone", cpuS: "Snapdragon XR2 Gen 2", price: null, priceS: "—", url: "https://www.meta.com/quest/quest-3/", src: [], chk: 0, note: "Most widely owned standalone MR headset; a common research baseline." },
+        { r: 6, n: "XREAL 1 Pro+", m: "XREAL", y: 2026, f: "g", st: "sale", stT: "On sale · Oct 2026", res: "1920 × 1080", disp: "Micro-OLED (Sony 0.55″)", fov: 51, fovE: 1, fovS: "57° diagonal", ppd: 38, ppdE: 1, w: 87, wE: 1, wS: "Not published; body unchanged from One Pro (87 g)", cpu: "USB-C", cpuS: "X1 chip, native 3DoF; 6DoF with Eye camera add-on", price: 599, priceS: "$599", url: "https://www.xreal.com/", src: [["Road to VR", "https://roadtovr.com/xreal-1-pro-plus-release-date-price/"]], chk: 2, note: "Current XREAL flagship display glasses; 1,200-nit peak (One Pro: 700)." },
+        { r: 7, n: "Valve Steam Frame", m: "Valve", y: 2026, f: "h", st: "sale", stT: "On sale · Sep 2026, order queue", res: "2160 × 2160", disp: "LCD, pancake lenses", fov: 110, fovS: "Up to 110°", ppd: 20, ppdE: 1, w: 440, wS: "440 g complete; 185 g front unit alone", cpu: "Standalone + PC", cpuS: "Snapdragon 8 Gen 3, SteamOS; eye-tracked foveated streaming from PC", price: 1059, priceS: "$1,059 (256 GB) / $1,299 (1 TB)", url: "https://partner.steamgames.com/doc/steamhardware/steamframe", src: [["vr.org specs", "https://vr.org/steam-frame-specs"]], chk: 2, note: "Light front unit; weight sits mostly in the rear battery strap." },
+        { r: 8, n: "VITURE Beast", m: "VITURE", y: 2025, f: "g", st: "sale", stT: "On sale", res: "1920 × 1200", disp: "Micro-OLED", fov: 50, fovE: 1, fovS: "58° diagonal", ppd: 38, ppdE: 1, w: 88, wS: "≈88 g (earlier report; not on maker page)", cpu: "USB-C", cpuS: "Native 3DoF", price: 549, priceS: "$549", url: "https://www.viture.com/product/viture-beast-xr-glasses", src: [["VITURE", "https://www.viture.com/product/viture-beast-xr-glasses"]], chk: 1, note: "Widest VITURE FOV; 1,250 nits, Harman audio." },
+        { r: 9, n: "Bigscreen Beyond 2 / 2e", m: "Bigscreen", y: 2025, f: "p", st: "sale", stT: "On sale", res: "2560 × 2560", disp: "Micro-OLED, pancake lenses", fov: 108, fovS: "108° H, 116° diagonal (maker); a reviewer measured 106° H", ppd: 32, ppdNote: "maker peak; ≈24 average", w: 107, wS: "107 g (2); 108 g (2e, eye tracking)", cpu: "PC", cpuS: "DisplayPort tether; custom face-scanned fit", price: 959, priceS: "$959 / $1,159 (2e)", url: "https://www.bigscreenvr.com/", src: [["VR/AR Wiki", "https://vrarwiki.com/wiki/Bigscreen_Beyond_2e"]], chk: 2, note: "Lightest wide-FOV headset: 7 g over the weight target with a 108° FOV." },
+        { r: 10, n: "Varjo XR-4 Focal Edition", m: "Varjo", y: 2024, f: "p", st: "sale", stT: "On sale · enterprise", res: "3840 × 3744", disp: "LCD, mini-LED backlight", fov: 120, fovS: "120° × 105°", ppd: 51, ppdNote: "maker, centre", w: 665, wS: "665 g + 356 g headband", cpu: "PC", cpuS: "Tethered to PC", price: 9990, priceS: "$9,990 at launch; now by quote", url: "https://varjo.com/products/xr-4/", src: [["VR/AR Wiki", "https://vrarwiki.com/wiki/Varjo_XR-4_Focal_Edition"]], chk: 2, note: "Highest centre PPD of any headset here; enterprise pricing." },
+        { r: 11, n: "ASUS AirVision M1", m: "ASUS", y: 2024, f: "g", st: "sale", stT: "On sale", res: "1920 × 1080", disp: "Micro-OLED", fov: 33, fovE: 1, fovS: "38° (diagonal)", ppd: 58, w: 80, wS: "80 g", cpu: "USB-C", cpuS: "Display only", price: null, priceS: "—", url: "https://www.asus.com/displays-desktops/glasses/airvision/asus-airvision-m1/techspec/", src: [["ASUS specs", "https://www.asus.com/displays-desktops/glasses/airvision/asus-airvision-m1/techspec/"]], chk: 2, note: "Closest to the 60 PPD target, bought with a very narrow 38° view." },
+        { r: 12, n: "Snap Specs", m: "Snap", y: 2026, f: "g", st: "pre", stT: "Preorder · ships fall 2026", res: null, disp: "LCoS waveguide, optical see-through", fov: null, fovS: "51° diagonal", ppd: null, w: 132, wS: "132 g (47 mm) / 136 g (51 mm)", cpu: "Standalone", cpuS: "Two Qualcomm chips (unnamed)", price: 2195, priceS: "$2,195", url: "https://www.specs.com/", src: [["UploadVR", "https://uploadvr.com/snap-specs-design-revealed-preorders-open-price/"]], chk: 2, note: "True see-through standalone AR. Resolution and PPD not disclosed. US, UK and France." },
+        { r: 13, n: "VITURE Pro 2", m: "VITURE", y: 2026, f: "g", st: "sale", stT: "On sale · Aug 2026", res: "1920 × 1080", disp: "Micro-OLED (Sony)", fov: 44, fovE: 1, fovS: "50° (axis not stated)", ppd: 43, ppdE: 1, w: 63, wS: "63 g", cpu: "USB-C", cpuS: "Display only", price: 299, priceS: "$299", url: "https://www.viture.com/product/viture-pro-2-xr-glasses", src: [["vr.org", "https://vr.org/articles/viture-pro-2-299-dollars-63-grams-display-glasses-2026"]], chk: 2, note: "Lightest device here. 1,600 nits; dioptre dials to −5.00 D." },
+        { r: 14, n: "Pimax Dream Air", m: "Pimax", y: 2025, f: "p", st: "sale", stT: "Shipping", res: "3840 × 3552", disp: "Micro-OLED (Sony), pancake lenses", fov: 110, fovS: "110° (axis not stated)", ppd: 35, ppdE: 1, w: 170, wS: "< 170 g headset", cpu: "PC", cpuS: "DisplayPort 1.4a; Lighthouse or SLAM tracking", price: null, priceS: "—", url: "https://www.pimax.com/product/dream-air", src: [["Pimax", "https://www.pimax.com/product/dream-air"]], chk: 2, note: "Highest per-eye resolution in a sub-200 g headset." },
+        { r: 15, n: "Meta Quest 3S", m: "Meta", y: 2024, f: "h", st: "sale", stT: "On sale", res: "1832 × 1920", disp: "LCD, Fresnel lenses", fov: 96, fovS: "96–97° H", ppd: 20, w: 514, wS: "514 g", cpu: "Standalone", cpuS: "Snapdragon XR2 Gen 2", price: null, priceS: "—", url: "https://www.meta.com/quest/quest-3s/", src: [], chk: 0, note: "Entry-level standalone headset." },
+        { r: 16, n: "RayNeo GT Max", m: "RayNeo", y: 2026, f: "g", st: "sale", stT: "On sale · Sep 2026", res: "1920 × 1080", disp: "Micro-OLED, 120 Hz", fov: 53, fovE: 1, fovS: "59° diagonal", ppd: 38, w: 78, wS: "78 g", cpu: "USB-C", cpuS: "Vision 4000 chip, native 3DoF", price: 429, priceS: "$429", url: "https://www.rayneo.com/en-ca/blogs/news/rayneo-gt-vs-gt-max-spec-comparison", src: [["RayNeo comparison", "https://www.rayneo.com/en-ca/blogs/news/rayneo-gt-vs-gt-max-spec-comparison"]], chk: 2, note: "Wide-FOV sibling of the RayNeo GT; IPD sizes S/M/L." },
+        { r: 17, n: "Shiftall MeganeX 8K Mark II", m: "Shiftall", y: 2026, f: "p", st: "sale", stT: "On sale", res: "3552 × 3840", disp: "Micro-OLED", fov: 96, fovS: "96–112° (earlier report; axis not stated)", ppd: 25, ppdE: 1, w: 179, wS: "179 g (Mark II); 185 g (Superlight 8K)", cpu: "PC", cpuS: "DisplayPort tether", price: 1900, priceS: "$1,900", url: "https://en.shiftall.net/products/meganex8kmk2", src: [["Road to VR", "https://www.roadtovr.com/shiftall-meganex-8k-mark-2-release-date-price/"]], chk: 1, note: "Successor to the MeganeX Superlight 8K; near-zero facial pressure design." },
+        { r: 18, n: "Pico 4 Ultra", m: "Pico (ByteDance)", y: 2024, f: "h", st: "sale", stT: "On sale · not in US", res: "2160 × 2160", disp: "LCD, pancake lenses", fov: 104, fovS: "104°", ppd: 20.8, w: 580, wS: "580 g", cpu: "Standalone", cpuS: "Snapdragon XR2 Gen 2", price: null, priceS: "—", url: "https://www.picoxr.com/global/products/pico4-ultra", src: [], chk: 0, note: "" },
+        { r: 19, n: "Rokid Max 2", m: "Rokid", y: 2025, f: "g", st: "sale", stT: "On sale", res: "1920 × 1080", disp: "Micro-OLED", fov: 44, fovE: 1, fovS: "50° diagonal", ppd: 43, ppdE: 1, w: 75, wS: "75 g", cpu: "USB-C", cpuS: "Display only", price: null, priceS: "—", url: "https://global.rokid.com/products/rokid-max-2-ar-glasses", src: [], chk: 0, note: "Dioptre dials to −6.00 D." },
+        { r: 20, n: "RayNeo GT", m: "RayNeo", y: 2026, f: "g", st: "sale", stT: "On sale · Sep 2026", res: "1920 × 1080", disp: "Micro-OLED, 120 Hz", fov: 41, fovE: 1, fovS: "46° diagonal", ppd: 49, w: 68, wS: "68 g", cpu: "USB-C", cpuS: "Vision 4000 chip, native 3DoF", price: 329, priceS: "$329", url: "https://www.rayneo.com/products/rayneo-gt-ar-glasses", src: [["RayNeo comparison", "https://www.rayneo.com/en-ca/blogs/news/rayneo-gt-vs-gt-max-spec-comparison"]], chk: 2, note: "" },
+        { r: 21, n: "VITURE Pro XR", m: "VITURE", y: 2024, f: "g", st: "sale", stT: "On sale · older model", res: "1920 × 1080", disp: "Micro-OLED, electrochromic dimming", fov: 41, fovE: 1, fovS: "46° diagonal", ppd: 49, w: 77, wS: "77 g", cpu: "USB-C", cpuS: "Display only", price: null, priceS: "—", url: "https://www.viture.com/", src: [], chk: 0, note: "Predecessor of the Pro 2." },
+        { r: 22, n: "RayNeo Air 2s", m: "RayNeo", y: 2024, f: "g", st: "sale", stT: "On sale", res: "1920 × 1080", disp: "Micro-OLED", fov: 41, fovE: 1, fovS: "46° diagonal", ppd: 47, ppdE: 1, w: 78, wS: "78 g", cpu: "USB-C", cpuS: "Display only", price: null, priceS: "—", url: "https://www.rayneo.com/products/rayneo-air_2s", src: [], chk: 0, note: "" },
+        { r: 23, n: "HTC Vive XR Elite", m: "HTC", y: 2023, f: "h", st: "sale", stT: "On sale", res: "1920 × 1920", disp: "LCD, pancake lenses", fov: 110, fovS: "110°", ppd: 21, w: 273, wS: "273 g in glasses mode (external power); 625 g with battery", cpu: "Standalone + PC", cpuS: "Snapdragon XR2; converts between standalone and PC-tethered", price: null, priceS: "—", url: "https://www.vive.com/us/product/vive-xr-elite/overview/", src: [], chk: 0, note: "" },
+        { r: 24, n: "Immersed Visor", m: "Immersed", y: null, f: "h", st: "pre", stT: "Preorder · not shipping", res: "\"4K\" per eye", disp: "Micro-OLED", fov: null, fovS: "Not stated (earlier claim 100°)", ppd: null, w: 186, wS: "< 200 g (earlier claim 186 g); battery on a cable", cpu: "PC / standalone", cpuS: "External battery", price: 700, priceS: "$700 preorder", url: "https://visor.com/", src: [["vr.org", "https://vr.org/articles/immersed-visor-shipping-update-price-increase-july-2026"], ["MIXED", "https://mixed-news.com/en/immersed-1-sa-visor-deposits-going-concern-doubt/"]], chk: 2, note: "Productivity-first headset; preorders since 2023, still no ship date. MIXED reports the company flagged going-concern doubt." },
+        { r: 25, n: "Pico Space Pro", m: "Pico (ByteDance)", y: 2026, f: "h", st: "ann", stT: "Announced · Dec 2026 (unconfirmed)", res: "\"Dual-eye 4K\"", disp: "Micro-OLED", fov: null, fovS: "Not announced", ppd: 40, ppdNote: "maker average; 45 centre", w: null, wS: "Not announced", cpu: "Tethered unit", cpuS: "Separate compute and battery unit", price: null, priceS: "—", url: "https://vr.org/pico-space-pro", linkNews: 1, src: [["vr.org", "https://vr.org/pico-space-pro"]], chk: 2, note: "No official product page yet; specs are Pico claims." },
+        { r: 26, n: "XREAL One Pro", m: "XREAL", y: 2025, f: "g", st: "old", stT: "Superseded by 1 Pro+", res: "1920 × 1080", disp: "Micro-OLED (Sony 0.55″)", fov: 51, fovE: 1, fovS: "57° diagonal", ppd: 38, w: 87, wS: "87 g", cpu: "USB-C", cpuS: "X1 chip, native 3DoF", price: null, priceS: "—", url: "https://www.xreal.com/", src: [], chk: 1, note: "700 nits." },
+        { r: 27, n: "Nimo 1", m: "Nimo Planet", y: null, f: "g", st: "ann", stT: "Status unclear", res: "1920 × 1080", disp: "Waveguide", fov: 41, fovE: 1, fovS: "46° diagonal", ppd: 49, w: 70, wS: "70 g; compute puck", cpu: "Puck", cpuS: "Snapdragon XR2 puck", price: null, priceS: "—", url: "https://www.nimoplanet.com/", src: [], chk: 0, note: "Status not re-checked." },
+        { r: 28, n: "Apple Vision Pro (M2)", m: "Apple", y: 2024, f: "h", st: "old", stT: "Superseded", res: "≈3660 × 3200", disp: "Micro-OLED", fov: 100, fovE: 1, fovS: "≈100°", ppd: 34, ppdE: 1, w: 600, wS: "600–650 g; 353 g battery", cpu: "Standalone", cpuS: "Apple M2 + R1", price: null, priceS: "—", url: "https://www.apple.com/apple-vision-pro/", src: [], chk: 0, note: "" },
+        { r: 29, n: "Meta Quest Pro", m: "Meta", y: 2022, f: "h", st: "old", stT: "Discontinued", res: "1800 × 1920", disp: "LCD, mini-LED backlight", fov: 106, fovS: "106°", ppd: 22, w: 722, wS: "722 g", cpu: "Standalone", cpuS: "Snapdragon XR2+ Gen 1", price: null, priceS: "—", url: "https://www.meta.com/quest/quest-pro/", src: [], chk: 0, note: "" },
+        { r: 30, n: "Meta Orion", m: "Meta", y: 2024, f: "g", st: "proto", stT: "Prototype · not for sale", res: null, disp: "Micro-LED projectors, silicon-carbide waveguides", fov: null, fovS: "≈70° diagonal", ppd: null, w: 98, wS: "98 g; wireless compute puck and EMG wristband", cpu: "Puck", cpuS: "Wireless compute puck", price: null, priceS: "—", url: "https://about.fb.com/news/2024/09/introducing-orion-our-first-true-augmented-reality-glasses/", src: [], chk: 0, note: "Reference prototype for see-through AR at under 100 g." }
+      ];
+
+      /* ---------- helpers ---------- */
+      const $ = (s, el = document) => el.querySelector(s);
+      const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+      const fmt = (v) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
+      const met = (d) => ({
+        w: d.w == null ? null : d.w < T.w && !d.wApprox,
+        fov: d.fov == null ? null : d.fov >= T.fov,
+        ppd: d.ppd == null ? null : d.ppd >= T.ppd,
+      });
+      D.forEach((d) => { const m = met(d); d.fit = [m.w, m.fov, m.ppd].filter(Boolean).length; d.met = m; });
+
+      const SHAPE = {
+        g: (x, y, s) => `<circle cx="${x}" cy="${y}" r="${s}"/>`,
+        h: (x, y, s) => `<rect x="${x - s * .9}" y="${y - s * .9}" width="${s * 1.8}" height="${s * 1.8}" rx="1.5"/>`,
+        p: (x, y, s) => `<path d="M${x} ${y - s * 1.2}L${x + s * 1.15} ${y + s * .85}L${x - s * 1.15} ${y + s * .85}Z"/>`,
+      };
+      const COLOR = { g: "var(--s1)", h: "var(--s2)", p: "var(--s3)" };
+      const markSvg = (f, filled, size = 12) =>
+        `<svg class="mark" width="${size}" height="${size}" viewBox="0 0 12 12" aria-hidden="true"><g fill="${filled ? COLOR[f] : "none"}" stroke="${COLOR[f]}" stroke-width="1.6">${SHAPE[f](6, 6.3, 4)}</g></svg>`;
+
+      /* ---------- state ---------- */
+      const state = { q: "", form: "all", avail: "all", sort: "rank", dir: 1, open: new Set() };
+
+      /* ---------- legend ---------- */
+      $("#legend").innerHTML =
+        Object.entries(FORMS).map(([k, v]) => `<span>${markSvg(k, true)}${v}</span>`).join("") +
+        `<span>${markSvg("g", true)}&nbsp;solid: &lt; 100 g</span><span>${markSvg("g", false)}&nbsp;outline: ≥ 100 g</span>`;
+
+      /* ---------- chart ---------- */
+      const W = 860, H = 390, M = { l: 46, r: 18, t: 28, b: 40 };
+      const X0 = 20, X1 = 130, Y0 = 0, Y1 = 70;
+      const sx = (v) => M.l + ((v - X0) / (X1 - X0)) * (W - M.l - M.r);
+      const sy = (v) => H - M.b - ((v - Y0) / (Y1 - Y0)) * (H - M.t - M.b);
+      const LABELS = {
+        "Apple Vision Pro (M5)": [-8, -12, "end", "Vision Pro (M5)"],
+        "Samsung Galaxy XR": [17, 4, "start", "Galaxy XR"],
+        "Pimax Dream Air": [10, -10, "start", "Dream Air"],
+        "Meta VR Glasses": [0, -14, "middle"],
+        "XREAL Aura": [-10, 4, "end"],
+        "Varjo XR-4 Focal Edition": [-10, 4, "end", "Varjo XR-4"],
+        "ASUS AirVision M1": [10, 4, "start"],
+        "Meta Quest 3": [10, 14, "start", "Quest 3"],
+        "Valve Steam Frame": [10, 14, "start", "Steam Frame"],
+        "Bigscreen Beyond 2 / 2e": [-10, 16, "end", "Beyond 2"],
+        "VITURE Pro 2": [-10, 4, "end"],
+      };
+      function drawChart() {
+        const pts = D.filter((d) => d.fov != null && d.ppd != null);
+        let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Scatter plot of pixels per degree against horizontal field of view for ${pts.length} devices. No device reaches the target region of at least 80 degrees and 60 pixels per degree.">`;
+        // target zone
+        s += `<rect class="zone" x="${sx(T.fov)}" y="${sy(Y1)}" width="${sx(X1) - sx(T.fov)}" height="${sy(T.ppd) - sy(Y1)}"/>`;
+        // grid
+        for (let v = 30; v <= 130; v += 10) s += `<line class="gl" x1="${sx(v)}" x2="${sx(v)}" y1="${sy(Y0)}" y2="${sy(Y1)}"/><text class="tk num" x="${sx(v)}" y="${H - M.b + 16}" text-anchor="middle">${v}°</text>`;
+        for (let v = 0; v <= 70; v += 10) s += `<line class="gl" x1="${sx(X0)}" x2="${sx(X1)}" y1="${sy(v)}" y2="${sy(v)}"/><text class="tk num" x="${M.l - 8}" y="${sy(v) + 4}" text-anchor="end">${v}</text>`;
+        s += `<line class="ax" x1="${sx(X0)}" x2="${sx(X1)}" y1="${sy(0)}" y2="${sy(0)}"/>`;
+        // target lines
+        s += `<line class="tl" x1="${sx(T.fov)}" x2="${sx(T.fov)}" y1="${sy(Y0)}" y2="${sy(Y1)}"/><line class="tl" x1="${sx(X0)}" x2="${sx(X1)}" y1="${sy(T.ppd)}" y2="${sy(T.ppd)}"/>`;
+        s += `<text class="zl" x="${sx(X1) - 6}" y="${sy(T.ppd) - 8}" text-anchor="end">Target · ≥ 80° and ≥ 60 PPD (+ &lt; 100 g)</text>`;
+        s += `<text class="at" x="${sx(X1)}" y="${H - 4}" text-anchor="end">Horizontal field of view per eye →</text>`;
+        s += `<text class="at" x="${M.l - 8}" y="12" text-anchor="start">↑ Pixels per degree</text>`;
+        // points: heavy first so light ones sit on top
+        const order = [...pts].sort((a, b) => (b.w ?? 999) - (a.w ?? 999));
+        for (const d of order) {
+          const x = sx(d.fov), y = sy(d.ppd), light = d.met.w === true;
+          s += `<g class="pt" data-r="${d.r}" fill="${light ? COLOR[d.f] : "var(--surface)"}" stroke="${COLOR[d.f]}">${SHAPE[d.f](x, y, 5.5)}</g>`;
+        }
+        for (const d of pts) {
+          const L = LABELS[d.n]; if (!L) continue;
+          s += `<text class="lbl" x="${sx(d.fov) + L[0]}" y="${sy(d.ppd) + L[1]}" text-anchor="${L[2]}">${esc(L[3] || d.n)}</text>`;
+        }
+        for (const d of pts) s += `<circle class="hit" data-r="${d.r}" cx="${sx(d.fov)}" cy="${sy(d.ppd)}" r="11"/>`;
+        s += `</svg><div class="tip" id="tip" role="status"></div>`;
+        $("#chart").innerHTML = s;
+
+        const tip = $("#tip"), box = $("#chart");
+        const show = (el) => {
+          const d = D.find((x) => x.r === +el.dataset.r);
+          const same = D.filter((x) => x !== d && x.fov === d.fov && x.ppd === d.ppd).map((x) => x.n);
+          const b = box.getBoundingClientRect(), r = el.getBoundingClientRect();
+          tip.innerHTML = `<b>${esc(d.n)}</b><br>${d.fovE ? "≈" : ""}${fmt(d.fov)}° H-FOV · ${d.ppdE ? "≈" : ""}${fmt(d.ppd)} PPD<br>${d.w != null ? (d.wE || d.wApprox ? "≈" : "") + d.w + " g" : "weight n/s"} · <span class="tm">${esc(FORMS[d.f])}</span>${same.length ? `<br><span class="tm">Same position: ${esc(same.join(", "))}</span>` : ""}`;
+          let left = r.left - b.left + r.width / 2;
+          left = Math.max(110, Math.min(b.width - 110, left));
+          tip.style.left = left + "px"; tip.style.top = (r.top - b.top) + "px"; tip.style.opacity = 1;
+          box.querySelectorAll(".pt").forEach((p) => p.classList.toggle("dim", p.dataset.r !== el.dataset.r));
+        };
+        const hide = () => { tip.style.opacity = 0; box.querySelectorAll(".pt").forEach((p) => p.classList.remove("dim")); };
+        box.querySelectorAll(".hit").forEach((h) => {
+          h.addEventListener("mouseenter", () => show(h));
+          h.addEventListener("mouseleave", hide);
+          h.addEventListener("click", () => jumpTo(+h.dataset.r));
+        });
+      }
+
+      function jumpTo(r) {
+        state.q = ""; $("#q").value = ""; state.form = "all"; state.avail = "all";
+        renderSegs(); state.open.add(r); render();
+        const row = document.querySelector(`tr.row[data-r="${r}"]`);
+        if (!row) return;
+        row.scrollIntoView({ block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+        row.classList.remove("flash"); void row.offsetWidth; row.classList.add("flash");
+      }
+
+      /* ---------- controls ---------- */
+      const FORM_OPTS = [["all", "All"], ["g", "Glasses"], ["h", "Headsets"], ["p", "PC VR"]];
+      const AVAIL_OPTS = [["all", "All"], ["now", "On sale"], ["soon", "Upcoming"], ["past", "Past"]];
+      function renderSegs() {
+        $("#formSeg").innerHTML = FORM_OPTS.map(([k, v]) => `<button type="button" data-k="${k}" aria-pressed="${state.form === k}">${k !== "all" ? markSvg(k, true, 10) : ""}${v}</button>`).join("");
+        //$("#availSeg").innerHTML = AVAIL_OPTS.map(([k, v]) => `<button type="button" data-k="${k}" aria-pressed="${state.avail === k}">${v}</button>`).join("");
+      }
+      $("#formSeg").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.form = b.dataset.k; renderSegs(); render(); });
+      $("#availSeg").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.avail = b.dataset.k; renderSegs(); render(); });
+      $("#q").addEventListener("input", (e) => { state.q = e.target.value.trim().toLowerCase(); render(); });
+      const DEFAULT_DIR = { rank: 1, n: 1, w: 1, fov: -1, ppd: -1, fit: -1, price: 1 };
+      $("#sortSel").addEventListener("change", (e) => { state.sort = e.target.value; state.dir = DEFAULT_DIR[state.sort]; render(); });
+      document.querySelectorAll("thead th[data-k] button").forEach((b) => b.addEventListener("click", () => {
+        const k = b.parentElement.dataset.k;
+        if (state.sort === k) state.dir *= -1; else { state.sort = k; state.dir = DEFAULT_DIR[k]; }
+        $("#sortSel").value = k; render();
+      }));
+
+      /* ---------- table ---------- */
+      function meterCell(key, d, label) {
+        const v = d[key];
+        const k = { w: "Weight", fov: "H-FOV", ppd: "PPD" }[key];
+        if (v == null) return `<td class="m num" data-k="${k}"><span class="val na">n/s</span><span class="bar"></span></td>`;
+        const est = (key === "w" && (d.wE || d.wApprox)) || (key === "fov" && d.fovE) || (key === "ppd" && d.ppdE);
+        const p = key === "w" ? Math.min(1, T.w / v) : Math.min(1, v / T[key]);
+        const ok = d.met[key];
+        const unit = key === "w" ? " g" : key === "fov" ? "°" : "";
+        const title = `${Math.round(p * 100)}% of target${est ? " (estimate)" : ""}`;
+        return `<td class="m num" data-k="${k}" title="${title}"><span class="val${est ? " est" : ""}">${est ? "≈" : ""}${fmt(v)}${unit}${ok ? ' <span aria-label="meets target">✓</span>' : ""}</span><span class="bar${ok ? " ok" : ""}"><i style="width:${(p * 100).toFixed(1)}%"></i></span></td>`;
+      }
+      function pips(d) {
+        return [["w", "W", "Weight < 100 g"], ["fov", "F", "H-FOV ≥ 80°"], ["ppd", "P", "PPD ≥ 60"]]
+          .map(([k, l, t]) => {
+            const m = d.met[k];
+            const cls = m === true ? "ok" : m === null ? "unk" : "";
+            return `<span class="pip ${cls}" title="${t}: ${m === true ? "met" : m === null ? "unknown" : "not met"}">${m === true ? "✓" : l}</span>`;
+          }).join("") + `<span class="sr" hidden>${d.fit} of 3</span>`;
+      }
+      function detail(d) {
+        const chk = d.chk === 2 ? `<span class="chk">Re-checked 18 Nov 2026</span>` : d.chk === 1 ? `<span class="chk">Partly re-checked 18 Nov 2026</span>` : `<span class="chk no">Not re-checked; carried over from earlier report</span>`;
+        const src = d.src.length ? d.src.map(([t, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a>`).join(" · ") : "—";
+        return `<div class="det-grid">
+    <dl><dt>FOV as stated</dt><dd>${esc(d.fovS)}</dd></dl>
+    <dl><dt>Display</dt><dd>${esc(d.disp)}</dd></dl>
+    <dl><dt>Weight detail</dt><dd>${esc(d.wS)}</dd></dl>
+    <dl><dt>Compute</dt><dd>${esc(d.cpuS)}</dd></dl>
+    ${d.ppdNote ? `<dl><dt>PPD note</dt><dd>${esc(d.ppdNote)}</dd></dl>` : ""}
+    <dl><dt>Sources</dt><dd>${src}</dd></dl>
+    <dl class="det-note"><dt>Note</dt><dd>${d.note ? esc(d.note) + " " : ""}${chk}</dd></dl>
+  </div>`;
+      }
+      function sortVal(d, k) {
+        switch (k) {
+          case "n": return d.n.toLowerCase();
+          case "fit": return d.fit * 1000 - d.r; // ties fall back to relevance
+          default: return d[k];
+        }
+      }
+      function render() {
+        let rows = D.filter((d) =>
+          (state.form === "all" || d.f === state.form) &&
+          (state.avail === "all" || STATUS_GROUP[d.st] === state.avail) &&
+          (!state.q || (d.n + " " + d.m).toLowerCase().includes(state.q)));
+        const k = state.sort, dir = state.dir;
+        rows.sort((a, b) => {
+          const va = sortVal(a, k), vb = sortVal(b, k);
+          if (va == null && vb == null) return a.r - b.r;
+          if (va == null) return 1; if (vb == null) return -1;   // unknowns always last
+          if (va < vb) return -dir; if (va > vb) return dir; return a.r - b.r;
+        });
+        document.querySelectorAll("thead th[data-k]").forEach((th) => {
+          if (th.dataset.k === k) th.setAttribute("aria-sort", dir > 0 ? "ascending" : "descending"); else th.removeAttribute("aria-sort");
+        });
+        $("#count").textContent = `${rows.length} of ${D.length} shown`;
+        if (!rows.length) { $("#tb").innerHTML = `<tr><td colspan="9" class="empty">No devices match.</td></tr>`; return; }
+        $("#tb").innerHTML = rows.map((d) => {
+          const open = state.open.has(d.r);
+          const link = d.url ? `<a href="${esc(d.url)}" target="_blank" rel="noopener" title="${d.linkNews ? "News coverage (no official page yet)" : "Maker page"}">${esc(d.n)} <span class="ext">↗</span></a>` : esc(d.n);
+          return `<tr class="row" data-r="${d.r}" aria-expanded="${open}" tabindex="0">
+      <td class="rk r num">${d.r}</td>
+      <td class="dev"><div class="nm">${markSvg(d.f, true, 10)}${link}</div><div class="mk">${esc(d.m)}${d.y ? " · " + d.y : ""}</div><span class="st ${d.st}">${esc(d.stT)}</span></td>
+      <td class="form"><b>${esc(FORMS[d.f])}</b>${esc(d.cpu)}</td>
+      ${meterCell("w", d)}${meterCell("fov", d)}${meterCell("ppd", d)}
+      <td class="res num">${d.res ? esc(d.res) : '<span class="na">n/s</span>'}<small>${esc(d.disp.split(",")[0])}</small></td>
+      <td class="price num">${esc(d.priceS)}</td>
+      <td class="fit">${pips(d)}</td>
+    </tr>${open ? `<tr class="det"><td colspan="9">${detail(d)}</td></tr>` : ""}`;
+        }).join("");
+      }
+      $("#tb").addEventListener("click", (e) => {
+        if (e.target.closest("a")) return;
+        const tr = e.target.closest("tr.row"); if (!tr) return;
+        const r = +tr.dataset.r; state.open.has(r) ? state.open.delete(r) : state.open.add(r); render();
+      });
+      $("#tb").addEventListener("keydown", (e) => {
+        if ((e.key === "Enter" || e.key === " ") && e.target.matches("tr.row")) { e.preventDefault(); e.target.click(); const r = e.target.dataset.r; document.querySelector(`tr.row[data-r="${r}"]`)?.focus(); }
+      });
+
+      /* ---------- theme toggle (no storage) ---------- */
+      $("#themeBtn").addEventListener("click", () => {
+        const root = document.documentElement;
+        const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        root.dataset.theme = dark ? "light" : "dark";
+      });
+
+      $("#nDev").textContent = D.length;
+      const best = Math.max(...D.map((d) => d.fit));
+      $("#chartSub").textContent = `The shaded corner is the target; no device reaches it. Solid marks weigh under 100 g. Best score: ${best} of 3 targets.`;
+      renderSegs(); drawChart(); render();
+    })();
+  </script>
+</body>
+
+</html>
